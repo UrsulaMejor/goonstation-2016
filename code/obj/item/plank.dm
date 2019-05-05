@@ -27,3 +27,15 @@
 			return
 		else
 			return
+
+	attackby(obj/item/W as obj, mob/user as mob)
+		if (istype(W, /obj/item/staple_gun))
+			var/obj/item/staple_gun/G = W
+			if (G.staple.shot_sound)
+				playsound(user, G.staple.shot_sound, 50, 1)
+			var/obj/item/sign_post_parts/S = new /obj/item/sign_post_parts(get_turf(usr))
+			S.health = src.health
+			user.u_equip(src)
+			qdel(src)
+		else
+			..()
