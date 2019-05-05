@@ -2131,10 +2131,19 @@
 		. +=  "<br><span style=\"color:blue\">[src.name] is [bicon(src.handcuffed)] handcuffed!</span>"
 
 	if (src.wear_suit)
-		if (src.wear_suit.blood_DNA)
-			. += "<br><span style=\"color:red\">[src.name] has a[src.wear_suit.blood_DNA ? " bloody " : " "][bicon(src.wear_suit)] [src.wear_suit.name] on!</span>"
+		if  (istype(src.wear_suit, /obj/item/clothing/suit/sandwich_board))
+			var/obj/item/clothing/suit/sandwich_board/B = src.wear_suit
+			if (B.blood_DNA)
+				. += "<br><span style=\"color:red\">[src.name] has a[B.blood_DNA ? " bloody " : " "][bicon(B)] '[B.words]' [B.name] on!</span>"
+			else
+
+				. += "<br><span style=\"color:blue\">[src.name] has a [bicon(B)] '[B.words]' [B.name] on.</span>"
 		else
-			. += "<br><span style=\"color:blue\">[src.name] has a [bicon(src.wear_suit)] [src.wear_suit.name] on.</span>"
+			if (src.wear_suit.blood_DNA)
+				. += "<br><span style=\"color:red\">[src.name] has a[src.wear_suit.blood_DNA ? " bloody " : " "][bicon(src.wear_suit)] [src.wear_suit.name] on!</span>"
+			else
+
+				. += "<br><span style=\"color:blue\">[src.name] has a [bicon(src.wear_suit)] [src.wear_suit.name] on.</span>"
 
 	if (src.ears)
 		. += "<br><span style=\"color:blue\">[src.name] has a [bicon(src.ears)] [src.ears.name] by [t_his] mouth.</span>"
