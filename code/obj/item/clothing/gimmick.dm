@@ -785,3 +785,53 @@
 	desc = "Traditional Scottish clothing. A bit drafty in here, isn't it?"
 	icon_state = "kilt"
 	item_state = "kilt"
+
+/obj/item/clothing/suit/sandwich_board
+	name = "sandwich board"
+	desc = "A wearable sign."
+	icon_state = "sandwich_board"
+	item_state = "sandwich_board"
+	icon = 'icons/obj/clothing/overcoats/item_suit_gimmick.dmi'
+	wear_image_icon = 'icons/mob/overcoats/worn_suit_gimmick.dmi'
+	inhand_image_icon = 'icons/mob/inhand/overcoat/hand_suit_gimmick.dmi'
+	var/words = null
+	var/message_length = 0
+	health = 50
+	get_desc(dist)
+		. = "<br><span style='color: blue'>It says:</span><br>[words]"
+
+	attackby(obj/item/W as obj, mob/user as mob)
+		if (istype(W, /obj/item/pen))
+			var/obj/item/pen/P = W
+			if (!src || !user || P.in_use || get_dist(src, user) > 1)
+				return
+			if (src.message_length >= MAX_MESSAGE_LEN)
+				boutput(user, "<span style=\"color:red\">There's not enough room left to write anything!.</span>")
+				return
+			P.in_use = 1
+			var/t = input(user, "What do you want to write?", null, null) as null|text
+			if (!t || get_dist(src, user) > 1)
+				P.in_use = 0
+				return
+			logTheThing("station", user, null, "writes on [src] with [P] at [showCoords(src.x, src.y, src.z)]: [t]")
+			t = copytext(html_encode(t), 1, (MAX_MESSAGE_LEN - src.message_length))
+			if (src.words)
+				src.words = "[src.words] <span style='color: [P.font_color]'>[t]</span>"
+			else
+				src.words = "<span style='color: [P.font_color]'>[t]</span>"
+			src.message_length = src.message_length + lentext(t)+1
+			P.in_use = 0
+
+		else if (istype(W, /obj/item/wirecutters))
+			playsound(src.loc, "sound/items/Wirecutter.ogg", 50, 1)
+			var/obj/item/sign_post_parts/S = new /obj/item/sign_post_parts(get_turf(usr))
+			if (src.words)
+				S.words = src.words
+				S.icon_state = "parts_written"
+			if (src.message_length)
+				S.message_length = src.message_length
+			S.health = src.health
+			user.u_equip(src)
+			qdel(src)
+		else
+			..()
