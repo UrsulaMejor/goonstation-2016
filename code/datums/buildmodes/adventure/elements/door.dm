@@ -41,7 +41,7 @@
 	anchored = 1
 	icon_state = "door_normal_closed"
 	var/opening = 0
-	var/door_type
+	var/door_type = "normal"
 
 	var/static/list/triggeracts = list("Close" = "close", "Do nothing" = "nop", "Lock closed" = "secclose", "Lock open" = "secopen", "Open" = "open", "Toggle" = "toggle", "Unlock" = "unlock")
 
@@ -89,10 +89,10 @@
 			return
 		src.opening = -1
 		if (src.opacity != orig_opacity)
-			src.RL_SetOpacity(orig_opacity)	
+			src.RL_SetOpacity(orig_opacity)
 		src.density = 1
 		flick("door_[door_type]_closing", src)
-		src.icon_state = "door_[door_type]_closed"			
+		src.icon_state = "door_[door_type]_closed"
 		spawn(10)
 			src.opening = 0
 

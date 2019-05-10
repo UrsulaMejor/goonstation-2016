@@ -67,7 +67,7 @@
 	density = 0
 	opacity = 0
 	anchored = 1
-	var/button_type
+	var/button_type = "red"
 	var/pressed = 0
 
 	attack_hand(var/mob/living/user as mob)
