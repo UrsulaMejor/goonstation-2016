@@ -29,7 +29,7 @@
 				target = null
 				return
 			if (T)
-				var/obj/adventurepuzzle/triggerable/lightningtrap/L = new /obj/adventurepuzzle/triggerable/lightningtrap(T)
+				var/obj/adventurepuzzle/triggerable/targetable/lightningtrap/L = new /obj/adventurepuzzle/triggerable/targetable/lightningtrap(T)
 				if (target)
 					var/obj/adventurepuzzle/invisible/I = locate() in target
 					if (!I)
@@ -49,7 +49,7 @@
 					target = object
 					target.overlays += selection
 
-/obj/adventurepuzzle/triggerable/lightningtrap
+/obj/adventurepuzzle/triggerable/targetable/lightningtrap
 	name = "lightning trap"
 	invisibility = 20
 	icon = 'icons/obj/projectiles.dmi'
@@ -57,7 +57,7 @@
 	density = 0
 	opacity = 0
 	anchored = 1
-	var/obj/adventurepuzzle/invisible/target
+	target = null
 	var/range = 6
 	var/trap_delay = 100
 	var/next_trap = 0
@@ -150,7 +150,7 @@
 			target = locate(target)
 
 	setTarget(var/atom/A)
-		target = A
+		..()
 
 	reset()
 		next_trap = 0

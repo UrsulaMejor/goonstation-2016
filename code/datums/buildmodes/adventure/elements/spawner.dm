@@ -52,7 +52,7 @@
 	density = 0
 	opacity = 0
 	anchored = 1
-	var/critter
+	var/critter = /obj/critter/bear
 	var/spawn_delay = 20
 	var/tmp/next_spawn = 0
 	var/spawn_count = 1
@@ -61,11 +61,45 @@
 
 	var/static/list/triggeracts = list("Decrease spawned critters" = "sub", "Destroy" = "del", "Disable" = "off", "Do nothing" = "nop", "Enable" = "on", "Increase spawned critters" = "add", "Spawn" = "spawn")
 
+
 	var/list/critter_vars = list()
+
+	var/aggressive = null // bool
+	var/atkcarbon = null // bool
+	var/atksilicon = null // bool
+	var/health = null // bool
+	var/opensdoors = null //bool
+	var/wanderer = null // bool
+	// "aggressive", "atkcarbon", "atksilicon", "health", "opensdoors", "wanderer"
+	// bool, bool, bool, num, bool bool
 
 	New()
 		..()
 		src.underlays += image('icons/obj/randompuzzles.dmi', "critter_spawn")
+		if (src.aggressive != null)
+			src.critter_vars += "aggressive"
+			src.critter_vars["aggressive"] = src.aggressive
+
+		if (src.atkcarbon != null)
+			src.critter_vars += "atkcarbon"
+			src.critter_vars["atkcarbon"] = src.atkcarbon
+
+		if (src.atksilicon != null)
+			src.critter_vars += "atksilicon"
+			src.critter_vars["atksilicon"] = src.atksilicon
+
+		if (src.health != null)
+			src.critter_vars += "health"
+			src.critter_vars["health"] = src.health
+
+		if (src.opensdoors != null)
+			src.critter_vars += "opensdoors"
+			src.critter_vars["opensdoors"] = src.opensdoors
+
+		if (src.wanderer != null)
+			src.critter_vars += "wanderer"
+			src.critter_vars["wanderer"] = src.wanderer
+
 
 	trigger_actions()
 		return triggeracts

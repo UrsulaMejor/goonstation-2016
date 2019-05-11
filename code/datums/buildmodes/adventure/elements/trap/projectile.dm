@@ -30,7 +30,7 @@
 				target = null
 				return
 			if (T)
-				var/obj/adventurepuzzle/triggerable/projectiletrap/P = new /obj/adventurepuzzle/triggerable/projectiletrap(T)
+				var/obj/adventurepuzzle/triggerable/targetable/projectiletrap/P = new /obj/adventurepuzzle/triggerable/targetable/projectiletrap(T)
 				if (target)
 					var/obj/adventurepuzzle/invisible/I = locate() in target
 					if (!I)
@@ -51,7 +51,7 @@
 					target = object
 					target.overlays += selection
 
-/obj/adventurepuzzle/triggerable/projectiletrap
+/obj/adventurepuzzle/triggerable/targetable/projectiletrap
 	name = "projectile trap"
 	invisibility = 20
 	icon = 'icons/obj/randompuzzles.dmi'
@@ -59,9 +59,9 @@
 	density = 0
 	opacity = 0
 	anchored = 1
-	var/proj_type
+	target = null
+	var/proj_type = /datum/projectile/bullet
 	var/datum/projectile/current_projectile
-	var/target
 	var/trap_delay = 100
 	var/next_trap = 0
 
@@ -126,7 +126,7 @@
 			. |= DESERIALIZE_NEED_POSTPROCESS
 
 	setTarget(var/atom/A)
-		target = A
+		..()
 
 	reset()
 		next_trap = 0

@@ -76,6 +76,11 @@
 	proc/reset()
 		return
 
+/obj/adventurepuzzle/triggerable/targetable
+	var/obj/adventurepuzzle/invisible/target
+	setTarget(var/atom/A)
+		src.target = A
+
 // Hello, goonstation coder reading this piece of code below.
 // I'd like to ask you to stop judging me. Yes, I can hear the thoughts formulating in your brain right now.
 // "what the fuck marquesas. why. why do you do this. why. why is this here. why."

@@ -27,7 +27,7 @@
 				target = null
 				return
 			if (T)
-				var/obj/adventurepuzzle/triggerable/fireballtrap/F = new /obj/adventurepuzzle/triggerable/fireballtrap(T)
+				var/obj/adventurepuzzle/triggerable/targetable/fireballtrap/F = new /obj/adventurepuzzle/triggerable/targetable/fireballtrap(T)
 				if (target)
 					var/obj/adventurepuzzle/invisible/I = locate() in target
 					if (!I)
@@ -46,7 +46,7 @@
 					target = object
 					target.overlays += selection
 
-/obj/adventurepuzzle/triggerable/fireballtrap
+/obj/adventurepuzzle/triggerable/targetable/fireballtrap
 	name = "fireball trap"
 	invisibility = 20
 	icon = 'icons/obj/wizard.dmi'
@@ -54,7 +54,7 @@
 	density = 0
 	opacity = 0
 	anchored = 1
-	var/obj/adventurepuzzle/invisible/target
+	target = null
 	var/range = 6
 	var/power = 5
 	var/trap_delay = 100
@@ -133,7 +133,7 @@
 			target = locate(target)
 
 	setTarget(var/atom/A)
-		target = A
+		..()
 
 	reset()
 		next_trap = 0
