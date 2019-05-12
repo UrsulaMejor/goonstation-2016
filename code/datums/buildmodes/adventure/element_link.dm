@@ -24,6 +24,15 @@
 			if(A.id == src.triggerable_id)
 				src.triggerable = A
 
+
+		for(var/obj/item/adventurepuzzle/A)
+
+			if(A.id == src.triggerer_id)
+				src.triggerer = A
+
+			if(A.id == src.triggerable_id)
+				src.triggerable = A
+
 		if(src.triggerer && src.triggerable)
 
 			if(istype(src.triggerable,/obj/adventurepuzzle/triggerable))

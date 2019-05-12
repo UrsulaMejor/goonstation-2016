@@ -9,18 +9,23 @@
 
 	var/is_on = 0
 
-	var/on_brig
-	var/on_cred
-	var/on_cgreen
-	var/on_cblue
+	var/on_brig = 5
+	var/on_cred = 1
+	var/on_cgreen = 1
+	var/on_cblue = 1
 	var/datum/light/light
 
 	var/static/list/triggeracts = list("Do nothing" = "nop", "Toggle" = "toggle", "Turn on" = "on", "Turn off" = "off")
 
 	New()
 		..()
-		light = new /datum/light/point
-		light.attach(src)
+		src.light = new /datum/light/point
+		src.light.attach(src)
+		src.light.set_color(on_cred,on_cgreen,on_cblue)
+		src.light.set_brightness(on_brig)
+		if(src.is_on)
+			src.light.enable()
+			blink(src.loc)
 
 	proc/on()
 		if (!is_on)

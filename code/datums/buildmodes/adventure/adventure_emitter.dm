@@ -14,6 +14,8 @@
 		L.on_cred = r
 		L.on_cgreen = g
 		L.on_cblue = b
+		L.light.set_color(r,g,b)
+		L.light.set_brightness(l)
 		L.on()
 		L.dir = holder.dir
 		L.onVarChanged("dir", SOUTH, L.dir)

@@ -36,8 +36,9 @@
 		if (opening == 1)
 			return
 		..()
-		var/myid = openid
 		openid++
+		var/myid = openid
+
 		spawn(time_limit + 10)
 			if (myid == openid)
 				close()

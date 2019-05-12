@@ -215,11 +215,11 @@
 	icon = 'icons/obj/randompuzzles.dmi'
 	name = "You shouldn't see this"
 	desc = "AND YOU DAMN WELL SHOULDN'T EXAMINE IT"
+	var/id = null
 
 // WOULDN'T IT BE NICE TO HAVE TRAITS???
 /obj/item/adventurepuzzle/triggerer
 	var/list/triggered = list()
-	var/id = null
 
 	proc/post_trigger()
 		for (var/obj/adventurepuzzle/triggerable/T in src.triggered)
