@@ -719,6 +719,7 @@ var/datum/preMapLoad/preMapLoad = new
 #include "code\obj\item\clown_items.dm"
 #include "code\obj\item\coin.dm"
 #include "code\obj\item\decoration.dm"
+#include "code\obj\item\deployable_turret.dm"
 #include "code\obj\item\dice.dm"
 #include "code\obj\item\flamethrower.dm"
 #include "code\obj\item\game_kit.dm"
@@ -1200,6 +1201,7 @@ var/datum/preMapLoad/preMapLoad = new
 #include "libs\Base64\text.dm"
 #include "maps\_disposaltester.dm"
 #include "maps\adv_test.dmm"
+#include "maps\test.dmm"
 #include "maps\config\map.dm"
 #include "maps\placeholders\map_placeholders.dm"
 // END_INCLUDE
