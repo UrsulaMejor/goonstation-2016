@@ -57,7 +57,8 @@
 	var/cycle_time = 15 // loop minimum wait time
 	var/wait_time = 30 //wait if it can't find a target
 	var/range = 7
-	var/current_angle = 0
+	var/internal_angle = 0
+	var/external_angle = 180
 	var/projectile_type = /datum/projectile/bullet/staple
 	var/datum/projectile/current_projectile = new/datum/projectile/bullet/staple
 	var/burst_size = 10 // number of shots to fire
@@ -87,41 +88,6 @@
 					sleep(10/fire_rate)
 				sleep(src.cycle_time)
 
-	proc/set_initial_angle()
-
-		switch(src.dir)
-			if(NORTH)
-				src.set_angle(0)
-			if(NORTHEAST)
-				src.set_angle(45)
-			if(EAST)
-				src.set_angle(90)
-			if(SOUTHEAST)
-				src.set_angle(135)
-			if(SOUTH)
-				src.set_angle(180)
-			if(SOUTHWEST)
-				src.set_angle(225)
-			if(WEST)
-				src.set_angle(270)
-			if(NORTHEAST)
-				src.set_angle(315)
-			else
-				src.set_angle(180) // how did you get here?
-
-	proc/set_angle(var/angle)
-
-		while(angle < 0)
-			angle += 360
-
-		while(angle > 360)
-			angle -= 360
-
-		var/old_ang = current_angle
-
-		src.current_angle = angle
-		//src.dir = angle2dir(src.current_angle)
-		src.animate_turret_turn(old_ang,angle)
 
 	proc/seek_target()
 
@@ -161,7 +127,7 @@
 
 		angle = angle < 0 ? angle+360 : angle
 
-		angle = angle - current_angle
+		angle = angle - src.external_angle
 
 		if (angle > 180)
 			angle = abs(360-angle)
@@ -274,7 +240,7 @@
 
 
 		else if (istype(W, /obj/item/wrench))
-			var/angle = input(usr, "What would you like to set the angle to?", "Degrees clockwise from North.", 0) as num
+			var/angle = input(usr, "Degrees clockwise from North:", "What would you like to set the angle to?", 0) as num
 			if(angle == null)
 				return
 			playsound(src.loc, "sound/items/Ratchet.ogg", 50, 1)
@@ -296,11 +262,78 @@
 			src.health = src.health - W.force
 			src.check_health()
 
+	proc/set_initial_angle()
+
+		switch(src.dir)
+			if(NORTH)
+				src.external_angle = (0)
+			if(NORTHEAST)
+				src.external_angle = (45)
+			if(EAST)
+				src.external_angle = (90)
+			if(SOUTHEAST)
+				src.external_angle = (135)
+			if(SOUTH)
+				src.external_angle = (180)
+			if(SOUTHWEST)
+				src.external_angle = (225)
+			if(WEST)
+				src.external_angle = (270)
+			if(NORTHEAST)
+				src.external_angle = (315)
+			else
+				src.external_angle = (180) // how did you get here?
+
+		boutput(world, "Initializing external angle as [src.external_angle]")
+		boutput(world, "Initializing internal angle as [src.internal_angle]")
+
+	proc/set_angle(var/angle)
+
+		boutput(world,"Input Angle is: [angle]")
+
+		while(angle < 0)
+			angle += 360
+
+		while(angle > 360)
+			angle -= 360
+
+		boutput(world, "Normalized Angle is: [angle]")
+
+		var/angle_diff = angle - src.external_angle
+
+		var/new_internal_angle  = src.internal_angle + angle_diff
+
+		boutput(world, "Internal Angle is: [src.internal_angle]")
+		boutput(world, "New Internal Angle is: [new_internal_angle]")
+
+		while(new_internal_angle < 0)
+			new_internal_angle += 360
+
+		while(new_internal_angle > 360)
+			new_internal_angle -= 360
+
+		boutput(world, "Normalized New Internal Angle is: [new_internal_angle]")
+
+		src.animate_turret_turn(src.internal_angle,new_internal_angle)
+
+		src.internal_angle = new_internal_angle
+		src.external_angle = angle
+		//src.dir = angle2dir(src.current_angle)
+
 	proc/animate_turret_turn(var/curr_ang,var/new_ang)
 
-		var/ang = new_ang - curr_ang
+		boutput(world,"Starting angle is [curr_ang], new angle is [new_ang].")
 
-		var/matrix/M = matrix()
-		M = M.Turn(ang)
+		var/ang = (new_ang - curr_ang)
 
-		animate(src, transform = M, time = 10, loop = 0)
+		boutput(world,"Turning [ang] degrees clockwise.")
+
+		//var/matrix/M = matrix()
+		//M = M.Turn(ang)
+
+		var/matrix/transform_original = src.transform
+		animate(src, transform = matrix(transform_original, ang/3, MATRIX_ROTATE | MATRIX_MODIFY), time = 10/3, loop = 0) //blatant code theft from throw_at
+		animate(transform = matrix(transform_original, ang/3, MATRIX_ROTATE | MATRIX_MODIFY), time = 10/3, loop = 0)
+		animate(transform = matrix(transform_original, ang/3, MATRIX_ROTATE | MATRIX_MODIFY), time = 10/3, loop = 0)
+
+		//animate(src, transform = M, time = 10, loop = 0)

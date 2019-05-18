@@ -1,12 +1,12 @@
 // BEGIN_INTERNALS
 /*
 MAP_ZOOM: 1.000
-LAST_COMPILE_TIME: 1557988041
-DIR: code code\chui\example code\datums code\datums\abilities\critter code\datums\buildmodes code\datums\buildmodes\adventure code\datums\buildmodes\adventure\elements code\datums\controllers code\datums\controllers\process code\datums\critter_mobs\health code\datums\projectiles code\mob code\mob\living code\mob\living\critter code\mob\living\critter\drone code\mob\living\silicon code\obj code\obj\artifacts\artifact_machines code\obj\critter code\obj\item code\obj\machinery code\WorkInProgress code\WorkInProgress\Spaceship icons icons\misc icons\mob icons\obj maps sound sound\vox 
+LAST_COMPILE_TIME: 1558218613
+DIR: browserassets browserassets\images browserassets\images\antagTips code code\chui\example code\datums code\datums\abilities\critter code\datums\buildmodes code\datums\buildmodes\adventure code\datums\buildmodes\adventure\elements code\mob code\mob\living code\mob\living\carbon code\obj code\obj\critter code\obj\item code\procs sound sound\vox 
 AUTO_FILE_DIR: OFF
 MAP_ICON_TYPE: 0
 LAST_COMPILE_VERSION: 512.1467
-WINDOW: maps\test.dmm;code\obj\machinery\turret.dm;code\obj\item\deployable_turret.dm;code\mob\living\critter\drone.dm;code\mob\living\critter\drone\ar.dm;code\mob\living\silicon\drone.dm;code\obj\critter\drone.dm;code\datums\controllers\process\critters.dm;code\datums\controllers\process\process.dm;code\datums\projectiles\bullet.dm;code\datums\projectiles\projectile_parent.dm;code\datums\buildmodes\adventure\adventure_critter.dm
+WINDOW: code\obj\critter\drone.dm;code\obj\item\grab.dm;code\obj\item\card.dm;code\datums\buildmodes\adventure\adventure_critter.dm;code\mob\living\carbon.dm;code\mob\living\carbon\human.dm;code\obj\item\deployable_turret.dm
 FILE: code\obj\item\deployable_turret.dm
 */
 // END_INTERNALS
