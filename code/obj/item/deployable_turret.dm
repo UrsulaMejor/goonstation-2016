@@ -82,7 +82,6 @@
 	var/max_health = 100
 	var/list/mob/living/target_list = list()
 	var/mob/living/target = null
-	var/cycle_time = 15 // time between bursts
 	var/wait_time = 30 //wait if it can't find a target
 	var/range = 7 // tiles
 	var/internal_angle = 0 // used for the matrix transforms
@@ -95,11 +94,20 @@
 	var/active = 0 // are we gonna shoot some peeps?
 	var/emagged = 0
 	var/damage_words = "fully operational!"
+	var/waiting = 0 // tracks whether or not the turret is waiting
+	var/shooting = 0 // tracks whether we're currently in the process of shooting someone
 
 	New()
 		..()
+		if (!(src in processing_items))
+			processing_items.Add(src)
 		spawn(0)
 			src.set_initial_angle()
+
+
+	disposing()
+		processing_items.Remove(src)
+		..()
 
 
 	get_desc(dist)
@@ -128,21 +136,31 @@
 
 
 	proc/process() //main turret processing loop
-		while(src.active)
+		if(src.waiting || src.shooting)
+			return
+		if(src.active)
 			if(!src.target)
 				if(!src.seek_target())
-					sleep(src.wait_time)
-					continue
+					src.waiting = 1
+					spawn(src.wait_time)
+						src.waiting = 0
+					return
 			if(!src.target_valid(src.target))
 				src.icon_state = "target_prism"
 				src.target = null
-				sleep(src.cycle_time)
-				continue
+				return
 			else
-				for (var/i = 0, i<burst_size, i++)
-					shoot(src.target.loc,src.loc,src)
-					sleep(10/fire_rate)
-				sleep(src.cycle_time)
+				src.shooting = 1
+				spawn()
+					for (var/i = 0, i<burst_size, i++)
+						if(src.target)
+							shoot(src.target.loc,src.loc,src)
+							sleep(10/fire_rate)
+						else
+							src.icon_state = "target_prism"
+							src.target = null
+							break
+					src.shooting = 0
 
 
 	attackby(obj/item/W, mob/user)
@@ -161,12 +179,18 @@
 				W:eyecheck(user)
 				boutput(user, "You unweld the turret from the floor.")
 				src.active = 0
+				src.shooting = 0
+				src.waiting = 0
+				src.target = null
 				src.spawn_deployer()
 				qdel(src)
 
 			else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
 				boutput(user, "You unweld the turret to the floor.")
 				src.active = 0
+				src.shooting = 0
+				src.waiting = 0
+				src.target = null
 				src.spawn_deployer()
 				qdel(src)
 
@@ -218,26 +242,28 @@
 					boutput(user, "<span style=\"color:blue\">You power off the turret.</span>")
 					src.icon_state = "grey_target_prism"
 					src.active = 0
+					src.shooting = 0
+					src.waiting = 0
+					src.target = null
 
 				else
 					boutput(user, "<span style=\"color:blue\">You power on the turret.</span>")
 					src.active = 1
 					src.icon_state = "target_prism"
-					spawn(src.wait_time)
-						src.process()
 
 			else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
 				if(src.active)
 					boutput(user, "<span style=\"color:blue\">You power off the turret.</span>")
 					src.icon_state = "grey_target_prism"
 					src.active = 0
+					src.shooting = 0
+					src.waiting = 0
+					src.target = null
 
 				else
 					boutput(user, "<span style=\"color:blue\">You power on the turret.</span>")
 					src.active = 1
 					src.icon_state = "target_prism"
-					spawn(src.wait_time)
-						src.process()
 
 		else
 			src.visible_message("<span style=\"color:red\"><b>[user]</b> bashes [src] with the [W]!</span>")
@@ -253,6 +279,9 @@
 	proc/check_health()
 		if(src.health <= 0)
 			src.active = 0
+			src.shooting = 0
+			src.waiting = 0
+			src.target = null
 			src.die()
 
 		var/percent_damage = src.health/src.max_health * 100
@@ -285,7 +314,7 @@
 
 	proc/seek_target()
 		src.target_list = list()
-		for (var/mob/living/C in view(src.range,src)) //i read on the forums that view() does some auto optimizing if you do a for _ in view(), but consider changing this to something else?
+		for (var/mob/living/C in mobs)
 			if(!src)
 				break
 
@@ -453,7 +482,6 @@
 	icon_state = "grey_target_prism"
 	health = 125
 	max_health = 125
-	cycle_time = 20 // time between bursts
 	wait_time = 20 //wait if it can't find a target
 	range = 5 // tiles
 	projectile_type = /datum/projectile/bullet/abg
