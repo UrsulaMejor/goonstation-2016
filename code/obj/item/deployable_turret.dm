@@ -6,7 +6,7 @@
 	name = "NAS-T"
 	desc = "A Nuclear Agent Sentry Turret."
 	icon = 'icons/obj/turrets.dmi'
-	icon_state = "grey_target_prism"
+	icon_state = "st_deployer"
 	force = 3.0
 	throwforce = 10.0
 	throw_speed = 1
@@ -27,34 +27,34 @@
 		if(istype(W, /obj/item/weldingtool) && W:welding)
 			var/turf/T = user.loc
 			if (!istype(src.loc, /turf))
-				boutput(user, "You can't weld the turret down there!")
+				user.show_message("You can't weld the turret down there!")
 				return
 
 			if (W:get_fuel() < 1)
-				boutput(user, "<span style=\"color:blue\">You need more welding fuel to complete this task.</span>")
+				user.show_message("<span style=\"color:blue\">You need more welding fuel to complete this task.</span>")
 				return
 
 			W:use_fuel(1)
-			boutput(user, "You start to weld the turret to the floor.")
+			user.show_message("You start to weld the turret to the floor.")
 			playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
 			sleep(20)
 
 			if ((user.loc == T && user.equipped() == W))
 				W:eyecheck(user)
-				boutput(user, "You weld the turret to the floor.")
+				user.show_message("You weld the turret to the floor.")
 				src.spawn_turret(T)
 				qdel(src)
 
 			else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
-				boutput(user, "You weld the turret to the floor.")
+				user.show_message("You weld the turret to the floor.")
 				src.spawn_turret(T)
 				qdel(src)
 
 			return
 
 	proc/spawn_turret(var/turf/user_loc)
-		var/obj/deployable_turret/turret = new /obj/deployable_turret(src.loc)
-		turret.dir = get_dir(user_loc,src.loc)
+		var/direct = get_dir(user_loc,src.loc)
+		var/obj/deployable_turret/turret = new /obj/deployable_turret(src.loc,direction=direct)
 		turret.health = src.health // NO FREE REPAIRS, ASSHOLES
 		turret.emagged = src.emagged
 		turret.damage_words = src.damage_words
@@ -75,7 +75,7 @@
 	name = "NAS-T"
 	desc = "A Nuclear Agent Sentry Turret."
 	icon = 'icons/obj/turrets.dmi'
-	icon_state = "grey_target_prism"
+	icon_state = "st_off"
 	anchored = 1
 	density = 1
 	var/health = 100
@@ -97,12 +97,25 @@
 	var/waiting = 0 // tracks whether or not the turret is waiting
 	var/shooting = 0 // tracks whether we're currently in the process of shooting someone
 
-	New()
+	New(var/direction)
 		..()
+		src.dir = direction
+		src.set_initial_angle()
+
+		src.icon_state = "st_base"
+		src.appearance_flags |= PIXEL_SCALE
+		src.appearance_flags |= RESET_TRANSFORM
+		src.underlays += src
+		src.appearance_flags &= ~RESET_TRANSFORM
+		src.icon_state = "st_off"
+		src.appearance_flags |= PIXEL_SCALE
+
+		var/matrix/M = matrix()
+		src.transform = M.Turn(src.external_angle)
 		if (!(src in processing_items))
 			processing_items.Add(src)
-		spawn(0)
-			src.set_initial_angle()
+
+
 
 
 	disposing()
@@ -146,38 +159,40 @@
 						src.waiting = 0
 					return
 			if(!src.target_valid(src.target))
-				src.icon_state = "target_prism"
+				src.icon_state = "st_idle"
 				src.target = null
 				return
 			else
 				src.shooting = 1
+				src.icon_state = "st_fire"
 				spawn()
 					for (var/i = 0, i<burst_size, i++)
 						if(src.target)
 							shoot(src.target.loc,src.loc,src)
 							sleep(10/fire_rate)
 						else
-							src.icon_state = "target_prism"
+							src.icon_state = "st_idle"
 							src.target = null
 							break
 					src.shooting = 0
+					src.icon_state = "st_active"
 
 
 	attackby(obj/item/W, mob/user)
 		if (istype(W, /obj/item/weldingtool) && W:welding && !(src.active))
 			var/turf/T = user.loc
 			if (W:get_fuel() < 1)
-				boutput(user, "<span style=\"color:blue\">You need more welding fuel to complete this task.</span>")
+				user.show_message("<span style=\"color:blue\">You need more welding fuel to complete this task.</span>")
 				return
 
 			W:use_fuel(1)
-			boutput(user, "You start to unweld the turret from the floor.")
+			user.show_message("You start to unweld the turret from the floor.")
 			playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
 			sleep(30)
 
 			if ((user.loc == T && user.equipped() == W))
 				W:eyecheck(user)
-				boutput(user, "You unweld the turret from the floor.")
+				user.show_message("You unweld the turret from the floor.")
 				src.active = 0
 				src.shooting = 0
 				src.waiting = 0
@@ -186,7 +201,7 @@
 				qdel(src)
 
 			else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
-				boutput(user, "You unweld the turret to the floor.")
+				user.show_message("You unweld the turret from the floor.")
 				src.active = 0
 				src.shooting = 0
 				src.waiting = 0
@@ -199,21 +214,21 @@
 		if (istype(W, /obj/item/weldingtool) && W:welding && (src.active))
 			var/turf/T = user.loc
 			if (src.health >= max_health)
-				boutput(user, "<span style=\"color:blue\">The turret is already fully repaired!.</span>")
+				user.show_message("<span style=\"color:blue\">The turret is already fully repaired!.</span>")
 				return
 
 			if (W:get_fuel() < 1)
-				boutput(user, "<span style=\"color:blue\">You need more welding fuel to complete this task.</span>")
+				user.show_message("<span style=\"color:blue\">You need more welding fuel to complete this task.</span>")
 				return
 
 			W:use_fuel(1)
-			boutput(user, "You start to repair the turret.")
+			user.show_message("You start to repair the turret.")
 			playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
 			sleep(20)
 
 			if ((user.loc == T && user.equipped() == W))
 				W:eyecheck(user)
-				boutput(user, "You repair some of the damage on the turret.")
+				user.show_message("You repair some of the damage on the turret.")
 				src.health = min(src.max_health, (src.health + 10))
 				src.check_health()
 
@@ -239,31 +254,31 @@
 
 			if ((user.loc == T && user.equipped() == W))
 				if(src.active)
-					boutput(user, "<span style=\"color:blue\">You power off the turret.</span>")
-					src.icon_state = "grey_target_prism"
+					user.show_message("<span style=\"color:blue\">You power off the turret.</span>")
+					src.icon_state = "st_off"
 					src.active = 0
 					src.shooting = 0
 					src.waiting = 0
 					src.target = null
 
 				else
-					boutput(user, "<span style=\"color:blue\">You power on the turret.</span>")
+					user.show_message("<span style=\"color:blue\">You power on the turret.</span>")
 					src.active = 1
-					src.icon_state = "target_prism"
+					src.icon_state = "st_idle"
 
 			else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
 				if(src.active)
-					boutput(user, "<span style=\"color:blue\">You power off the turret.</span>")
-					src.icon_state = "grey_target_prism"
+					user.show_message("<span style=\"color:blue\">You power off the turret.</span>")
+					src.icon_state = "st_off"
 					src.active = 0
 					src.shooting = 0
 					src.waiting = 0
 					src.target = null
 
 				else
-					boutput(user, "<span style=\"color:blue\">You power on the turret.</span>")
+					user.show_message("<span style=\"color:blue\">You power on the turret.</span>")
 					src.active = 1
-					src.icon_state = "target_prism"
+					src.icon_state = "st_idle"
 
 		else
 			src.visible_message("<span style=\"color:red\"><b>[user]</b> bashes [src] with the [W]!</span>")
@@ -334,7 +349,7 @@
 					src.target = T
 					min_dist = src.target_list[T]
 
-			src.icon_state = "orange_target_prism"
+			src.icon_state = "st_active"
 
 			playsound(src.loc, "sound/vox/woofsound.ogg", 40, 1)
 
@@ -465,12 +480,12 @@
 	name = "N.A.R.C.S."
 	desc = "A Nanotrasen Automatic Riot Control System."
 	icon = 'icons/obj/turrets.dmi'
-	icon_state = "grey_target_prism"
+	icon_state = "st_deployer"
 	health = 125
 
 	spawn_turret(var/turf/user_loc)
-		var/obj/deployable_turret/riot/turret = new /obj/deployable_turret/riot(src.loc)
-		turret.dir = get_dir(user_loc,src.loc)
+		var/direct = get_dir(user_loc,src.loc)
+		var/obj/deployable_turret/riot/turret = new /obj/deployable_turret/riot(src.loc,direction=direct)
 		turret.health = src.health
 		turret.emagged = src.emagged
 		turret.damage_words = src.damage_words
@@ -479,7 +494,7 @@
 	name = "N.A.R.C.S."
 	desc = "A Nanotrasen Automatic Riot Control System."
 	icon = 'icons/obj/turrets.dmi'
-	icon_state = "grey_target_prism"
+	icon_state = "st_off"
 	health = 125
 	max_health = 125
 	wait_time = 20 //wait if it can't find a target
