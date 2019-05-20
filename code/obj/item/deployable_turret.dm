@@ -103,7 +103,6 @@
 		src.set_initial_angle()
 
 		src.icon_state = "st_base"
-		src.appearance_flags |= PIXEL_SCALE
 		src.appearance_flags |= RESET_TRANSFORM
 		src.underlays += src
 		src.appearance_flags &= ~RESET_TRANSFORM
@@ -306,7 +305,7 @@
 			if(75 to 89)
 				damage_words = "a little bit damaged."
 			if(30 to 74)
-				damage_words = "looks pretty beaten up."
+				damage_words = "pretty beaten up."
 			if(0 to 29)
 				damage_words = "to be on the verge of falling apart!"
 
