@@ -15,9 +15,11 @@
 	health = 100
 	var/emagged = 0
 	var/damage_words = "fully operational!"
+	var/icon_tag = "st"
 
 	New()
 		..()
+		icon_state = "[src.icon_tag]_deployer"
 
 	get_desc(dist)
 		. = "<br><span style='color: blue'>It looks [damage_words]</span>"
@@ -96,17 +98,18 @@
 	var/damage_words = "fully operational!"
 	var/waiting = 0 // tracks whether or not the turret is waiting
 	var/shooting = 0 // tracks whether we're currently in the process of shooting someone
+	var/icon_tag = "st"
 
 	New(var/direction)
 		..()
 		src.dir = direction
 		src.set_initial_angle()
 
-		src.icon_state = "st_base"
+		src.icon_state = "[src.icon_tag]_base"
 		src.appearance_flags |= RESET_TRANSFORM
 		src.underlays += src
 		src.appearance_flags &= ~RESET_TRANSFORM
-		src.icon_state = "st_off"
+		src.icon_state = "[src.icon_tag]_off"
 		src.appearance_flags |= PIXEL_SCALE
 
 		var/matrix/M = matrix()
@@ -158,23 +161,23 @@
 						src.waiting = 0
 					return
 			if(!src.target_valid(src.target))
-				src.icon_state = "st_idle"
+				src.icon_state = "[src.icon_tag]_idle"
 				src.target = null
 				return
 			else
 				src.shooting = 1
-				src.icon_state = "st_fire"
+				src.icon_state = "[src.icon_tag]_fire"
 				spawn()
 					for (var/i = 0, i<burst_size, i++)
 						if(src.target)
 							shoot(src.target.loc,src.loc,src)
 							sleep(10/fire_rate)
 						else
-							src.icon_state = "st_idle"
+							src.icon_state = "[src.icon_tag]_idle"
 							src.target = null
 							break
 					src.shooting = 0
-					src.icon_state = "st_active"
+					src.icon_state = "[src.icon_tag]_active"
 
 
 	attackby(obj/item/W, mob/user)
@@ -254,7 +257,7 @@
 			if ((user.loc == T && user.equipped() == W))
 				if(src.active)
 					user.show_message("<span style=\"color:blue\">You power off the turret.</span>")
-					src.icon_state = "st_off"
+					src.icon_state = "[src.icon_tag]_off"
 					src.active = 0
 					src.shooting = 0
 					src.waiting = 0
@@ -263,12 +266,12 @@
 				else
 					user.show_message("<span style=\"color:blue\">You power on the turret.</span>")
 					src.active = 1
-					src.icon_state = "st_idle"
+					src.icon_state = "[src.icon_tag]_idle"
 
 			else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
 				if(src.active)
 					user.show_message("<span style=\"color:blue\">You power off the turret.</span>")
-					src.icon_state = "st_off"
+					src.icon_state = "[src.icon_tag]_off"
 					src.active = 0
 					src.shooting = 0
 					src.waiting = 0
@@ -277,7 +280,7 @@
 				else
 					user.show_message("<span style=\"color:blue\">You power on the turret.</span>")
 					src.active = 1
-					src.icon_state = "st_idle"
+					src.icon_state = "[src.icon_tag]_idle"
 
 		else
 			src.visible_message("<span style=\"color:red\"><b>[user]</b> bashes [src] with the [W]!</span>")
@@ -348,7 +351,7 @@
 					src.target = T
 					min_dist = src.target_list[T]
 
-			src.icon_state = "st_active"
+			src.icon_state = "[src.icon_tag]_active"
 
 			playsound(src.loc, "sound/vox/woofsound.ogg", 40, 1)
 
@@ -373,7 +376,17 @@
 		if (is_friend(C))
 			return 0
 
+
+		/*var/turf/curr_step = src.loc // CAUSES GAME CRASH??
+
+		while(curr_step != C.loc)
+			curr_step = get_step(C.loc,get_dir(C.loc,curr_step))
+			if (curr_step.opacity || curr_step.density)
+				return 0 */
+
+
 		var/angle = get_angle(src,C)
+
 
 		var/anglemod = (-(angle < 180 ? angle : angle - 360) + 90) //Blatant Code Theft from showLine(), checks to see if there's something in the way of us and the target
 		var/crossed_turfs = list()
@@ -481,6 +494,7 @@
 	icon = 'icons/obj/turrets.dmi'
 	icon_state = "st_deployer"
 	health = 125
+	icon_tag = "nt"
 
 	spawn_turret(var/turf/user_loc)
 		var/direct = get_dir(user_loc,src.loc)
@@ -493,7 +507,6 @@
 	name = "N.A.R.C.S."
 	desc = "A Nanotrasen Automatic Riot Control System."
 	icon = 'icons/obj/turrets.dmi'
-	icon_state = "st_off"
 	health = 125
 	max_health = 125
 	wait_time = 20 //wait if it can't find a target
@@ -503,13 +516,18 @@
 	burst_size = 1 // number of shots to fire. Keep in mind the bullet's shot_count
 	fire_rate = 1 // rate of fire in shots per second
 	angle_arc_size = 60
+	icon_tag = "nt"
 
-	New()
-		..()
+	New(var/direction)
+		..(direction=direction)
 		spawn(src.wait_time)
 			if (src.emagged)
 				src.projectile_type = /datum/projectile/bullet/a12
 				src.current_projectile = new/datum/projectile/bullet/a12
+
+	shoot(var/turf/target, var/start, var/user, var/bullet = 0)
+		flick("[src.icon_tag]_shoot",src)
+		..(target,start,user,bullet)
 
 	is_friend(var/mob/living/C)
 		if (src.emagged)
