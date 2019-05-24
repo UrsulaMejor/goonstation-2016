@@ -3,8 +3,8 @@
 /////////////////////////////
 
 /obj/item/turret_deployer
-	name = "NAS-T"
-	desc = "A Nuclear Agent Sentry Turret."
+	name = "NAS-T Deployer"
+	desc = "A Nuclear Agent Sentry Turret Deployer. Use it in your hand to deploy."
 	icon = 'icons/obj/turrets.dmi'
 	icon_state = "st_deployer"
 	force = 3.0
@@ -25,37 +25,14 @@
 		. = "<br><span style='color: blue'>It looks [damage_words]</span>"
 
 
-	attackby(obj/item/W, mob/user)
-		if(istype(W, /obj/item/weldingtool) && W:welding)
-			var/turf/T = user.loc
-			if (!istype(src.loc, /turf))
-				user.show_message("You can't weld the turret down there!")
-				return
+	attack_self(mob/user as mob)
+		user.show_message("You assemble the turret parts.")
+		src.loc = get_turf(user)
+		src.spawn_turret(user.dir)
+		user.u_equip(src)
+		qdel(src)
 
-			if (W:get_fuel() < 1)
-				user.show_message("<span style=\"color:blue\">You need more welding fuel to complete this task.</span>")
-				return
-
-			W:use_fuel(1)
-			user.show_message("You start to weld the turret to the floor.")
-			playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
-			sleep(20)
-
-			if ((user.loc == T && user.equipped() == W))
-				W:eyecheck(user)
-				user.show_message("You weld the turret to the floor.")
-				src.spawn_turret(T)
-				qdel(src)
-
-			else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
-				user.show_message("You weld the turret to the floor.")
-				src.spawn_turret(T)
-				qdel(src)
-
-			return
-
-	proc/spawn_turret(var/turf/user_loc)
-		var/direct = get_dir(user_loc,src.loc)
+	proc/spawn_turret(var/direct)
 		var/obj/deployable_turret/turret = new /obj/deployable_turret(src.loc,direction=direct)
 		turret.health = src.health // NO FREE REPAIRS, ASSHOLES
 		turret.emagged = src.emagged
@@ -78,7 +55,7 @@
 	desc = "A Nuclear Agent Sentry Turret."
 	icon = 'icons/obj/turrets.dmi'
 	icon_state = "st_off"
-	anchored = 1
+	anchored = 0
 	density = 1
 	var/health = 100
 	var/max_health = 100
@@ -116,8 +93,6 @@
 		src.transform = M.Turn(src.external_angle)
 		if (!(src in processing_items))
 			processing_items.Add(src)
-
-
 
 
 	disposing()
@@ -187,29 +162,37 @@
 				user.show_message("<span style=\"color:blue\">You need more welding fuel to complete this task.</span>")
 				return
 
-			W:use_fuel(1)
-			user.show_message("You start to unweld the turret from the floor.")
-			playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
-			sleep(30)
+			if(src.anchored)
+				W:use_fuel(1)
+				user.show_message("You start to unweld the turret from the floor.")
+				playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
+				sleep(30)
 
-			if ((user.loc == T && user.equipped() == W))
-				W:eyecheck(user)
-				user.show_message("You unweld the turret from the floor.")
-				src.active = 0
-				src.shooting = 0
-				src.waiting = 0
-				src.target = null
-				src.spawn_deployer()
-				qdel(src)
+				if ((user.loc == T && user.equipped() == W))
+					user.show_message("You unweld the turret from the floor.")
+					W:eyecheck(user)
+					src.anchored = 0
 
-			else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
-				user.show_message("You unweld the turret from the floor.")
-				src.active = 0
-				src.shooting = 0
-				src.waiting = 0
-				src.target = null
-				src.spawn_deployer()
-				qdel(src)
+
+				else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
+					user.show_message("You unweld the turret from the floor.")
+					src.anchored = 0
+
+			else
+				W:use_fuel(1)
+				user.show_message("You start to weld the turret from the floor.")
+				playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
+				sleep(30)
+
+				if ((user.loc == T && user.equipped() == W))
+					user.show_message("You weld the turret to the floor.")
+					W:eyecheck(user)
+					src.anchored = 1
+
+
+				else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
+					user.show_message("You weld the turret to the floor.")
+					src.anchored = 1
 
 			return
 
@@ -237,16 +220,41 @@
 			return
 
 		else if (istype(W, /obj/item/wrench))
-			var/angle = input(usr, "Degrees clockwise from North:", "What would you like to set the angle to?", 0) as num
-			if(angle == null)
-				return
-			playsound(src.loc, "sound/items/Ratchet.ogg", 50, 1)
-			src.set_angle(angle)
+
+			if(src.anchored)
+
+				user.show_message("<span style=\"color:blue\">Click where you want to aim the turret!</span>")
+				var/datum/targetable/deployable_turret_aim/A = new()
+				user.targeting_spell = A
+				user.update_cursor()
+				A.my_turret = src
+				A.user_turf = get_turf(user)
+				playsound(src.loc, "sound/items/Ratchet.ogg", 50, 1)
+
+			else
+				var/turf/T = user.loc
+				user.show_message("You begin to disassemble the turret.")
+				playsound(src.loc, "sound/items/Ratchet.ogg", 50, 1)
+
+				sleep(20)
+
+				if ((user.loc == T && user.equipped() == W))
+					user.show_message("You disassemble the turret")
+					src.active = 0
+					src.shooting = 0
+					src.waiting = 0
+					src.target = null
+					src.spawn_deployer()
+					qdel(src)
 
 		else if (istype(W, /obj/item/card/emag))
 			return
 
 		else if (istype(W, /obj/item/screwdriver))
+
+			if(!src.anchored)
+				user.show_message("<span style=\"color:blue\">The turret is too unstable to fire! Secure it to the ground with a welding tool first!</span>")
+				return
 
 			var/turf/T = user.loc
 
@@ -485,6 +493,52 @@
 
 
 /////////////////////////////
+//   Turret Ability Stuff  //
+/////////////////////////////
+
+/datum/targetable/deployable_turret_aim
+	name = "Turret Aim"
+	desc = "You are aiming a turret"
+	cooldown = 0
+	targeted = 1
+	target_anything = 1
+	max_range = 3000
+	var/obj/deployable_turret/my_turret = null
+	var/turf/user_turf = null
+
+	castcheck(var/mob/M)
+		if (M.client && M.client.holder)
+			return 1
+
+	handleCast(var/atom/target)
+
+		var/mob/M = usr
+
+		if (istype(M))
+
+			if(!istype(M.equipped(),/obj/item/wrench))
+				return
+
+			if(!(get_turf(usr) == src.user_turf))
+				return
+
+			if(target == my_turret)
+				return
+
+			if (!istype(target,/turf))
+				target = get_turf(target)
+
+			if(target == get_turf(my_turret))
+				return
+
+			spawn(0)
+				src.my_turret.set_angle(get_angle(my_turret,target))
+
+			return 0
+
+
+
+/////////////////////////////
 //Why not one for security?//
 /////////////////////////////
 
@@ -496,16 +550,15 @@
 	health = 125
 	icon_tag = "nt"
 
-	spawn_turret(var/turf/user_loc)
-		var/direct = get_dir(user_loc,src.loc)
+	spawn_turret(var/direct)
 		var/obj/deployable_turret/riot/turret = new /obj/deployable_turret/riot(src.loc,direction=direct)
 		turret.health = src.health
 		turret.emagged = src.emagged
 		turret.damage_words = src.damage_words
 
 /obj/deployable_turret/riot
-	name = "N.A.R.C.S."
-	desc = "A Nanotrasen Automatic Riot Control System."
+	name = "N.A.R.C.S. Deployer"
+	desc = "A Nanotrasen Automatic Riot Control System Deployer. Use it in your hand to deploy."
 	icon = 'icons/obj/turrets.dmi'
 	health = 125
 	max_health = 125
@@ -567,9 +620,12 @@
 	info = {"<h4>Nuclear Agent Sentry Turret Manual</h4>
 	Congratulations, on your purchase of a Nuclear Agent Sentry Turret!<br>
 	This a turret that fires at non-syndicate threats in a 30 degree arc.<br>
-	Weld it to the floor to secure it, screwdriver to turn it on, and wrench it to set the angle.<br>
-	The firing angle is set in terms of degrees clockwise from North.<br>
-	Inputting a negative angle will result in a setting in terms of degrees counterclockwise from North.<br>
+	Press its deploy button while it is your hand to deploy it.<br>
+	The turret will start out facing the direction you are facing.<br>
+	If the turret is unsecured, wrenching it will disassemble it.<br>
+	Weld it to the floor to secure it.<br>
+	While secured, using a screwdriver on the turret will turn it on, and using a wrench on it will set the angle.<br>
+	Setting the angle will bring up a prompt to choose a target. Direct the turret to a sightline by pointing at it.<br>
 	Welding the turret while it is active will allow you to perform repairs.<br>"}
 
 /obj/item/paper/narcs_manual
@@ -577,7 +633,10 @@
 	info = {"<h4>Nanotrasen Automatic Riot Control System</h4>
 	Congratulations, on your purchase of a Nanotrasen Automatic Riot Control System!<br>
 	This a turret that fires at non-security and non-command threats in a 60 degree arc.<br>
-	Weld it to the floor to secure it, screwdriver to turn it on, and wrench it to set the angle.<br>
-	The firing angle is set in terms of degrees clockwise from North.<br>
-	Inputting a negative angle will result in a setting in terms of degrees counterclockwise from North.<br>
+	Press its deploy button while it is your hand to deploy it.<br>
+	The turret will start out facing the direction you are facing.<br>
+	If the turret is unsecured, wrenching it will disassemble it.<br>
+	Weld it to the floor to secure it.<br>
+	While secured, using a screwdriver on the turret will turn it on, and using a wrench on it will set the angle.<br>
+	Setting the angle will bring up a prompt to choose a target. Direct the turret to a sightline by pointing at it.<br>
 	Welding the turret while it is active will allow you to perform repairs.<br>"}
