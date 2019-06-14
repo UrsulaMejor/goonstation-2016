@@ -194,9 +194,7 @@
 					user.show_message("You weld the turret to the floor.")
 					src.anchored = 1
 
-			return
-
-		if (istype(W, /obj/item/weldingtool) && W:welding && (src.active))
+		else if (istype(W, /obj/item/weldingtool) && W:welding && (src.active))
 			var/turf/T = user.loc
 			if (src.health >= max_health)
 				user.show_message("<span style=\"color:blue\">The turret is already fully repaired!.</span>")
@@ -216,8 +214,6 @@
 				user.show_message("You repair some of the damage on the turret.")
 				src.health = min(src.max_health, (src.health + 10))
 				src.check_health()
-
-			return
 
 		else if (istype(W, /obj/item/wrench))
 
@@ -291,9 +287,11 @@
 					src.icon_state = "[src.icon_tag]_idle"
 
 		else
-			src.visible_message("<span style=\"color:red\"><b>[user]</b> bashes [src] with the [W]!</span>")
 			src.health = src.health - W.force
 			src.check_health()
+			..()
+
+		return
 
 
 	bullet_act(var/obj/projectile/P)
