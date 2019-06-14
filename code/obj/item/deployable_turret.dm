@@ -175,12 +175,12 @@
 
 
 				else if((istype(user, /mob/living/silicon/robot) && (user.loc == T)))
-					user.show_message("You unweld the turret from the floor.")
+					user.show_message("You unweld the turret  the floor.")
 					src.anchored = 0
 
 			else
 				W:use_fuel(1)
-				user.show_message("You start to weld the turret from the floor.")
+				user.show_message("You start to weld the turret to the floor.")
 				playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
 				sleep(30)
 
