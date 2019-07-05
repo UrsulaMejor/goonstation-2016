@@ -152,6 +152,25 @@
 				src.det_time += timer_modifier
 				return
 
+			if (istype(W, /obj/item/remote/syndicate_teleporter))
+				for(var/obj/submachine/syndicate_teleporter/S in get_turf(src)) //sender
+					for(var/obj/submachine/syndicate_teleporter/R) // receiver
+						if(R.id == S.id && S != R)
+							if(S.recharging == 1)
+								return
+							if(R.recharging == 1)
+								return
+							else
+								R.recharging = 1
+								S.recharging = 1
+								src.set_loc(R.loc)
+								showswirl(src.loc)
+								spawn(S.recharge)
+									S.recharging = 0
+								spawn(R.recharge)
+									R.recharging = 0
+							return
+
 			if (user.mind in NUKEMODE.syndicates)
 				if (src.armed == 1)
 					boutput(user, "<span style=\"color:blue\">You don't need to do anything else with the bomb.</span>")
