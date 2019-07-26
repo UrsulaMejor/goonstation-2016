@@ -40,6 +40,7 @@ var/list/ai_emotions = list("Happy" = "ai_happy",\
 	var/list/terminals = list() //Stuff connected to us over the powernet
 	var/hologramdown = 0 //is the hologram downed?
 	var/canvox = 1
+	var/can_announce = 1
 	var/dismantle_stage = 0
 	var/datum/light/light
 	var/death_timer = 100
@@ -65,6 +66,9 @@ var/list/ai_emotions = list("Happy" = "ai_happy",\
 
 	var/last_vox = -INFINITY
 	var/vox_cooldown = 1200
+
+	var/last_announcement = -INFINITY
+	var/announcement_cooldown = 1200
 
 	sound_fart = 'sound/misc/poo2_robot.ogg'
 
@@ -1758,6 +1762,42 @@ proc/get_mobs_trackable_by_AI()
 		logTheThing("say", src, null, "has created an intercom announcement: \"[output]\", input: \"[message_in]\"")
 		logTheThing("diary", src, null, "has created an intercom announcement: [output]", "say")
 		message_admins("[key_name(src)] has created an AI intercom announcement: \"[output]\"")
+
+
+/mob/living/silicon/ai/verb/ai_station_announcement()
+	set name = "AI Station Announcement"
+	set desc = "Makes a station announcement."
+	set category = "AI Commands"
+
+	if(src.stat || !can_announce)
+		return
+
+	if(last_announcement + announcement_cooldown > world.time)
+		src.show_text("This ability is still on cooldown for [round((announcement_cooldown + last_announcement - world.time) / 10)] seconds!", "red")
+		return
+
+	vox_reinit_check()
+
+	can_announce = 0
+	var/message_in = input(usr, "Please enter a message (280 characters)", "Station Announcement?", "") // I made an announcement in game on the announcement computer and this seemed to be the max length
+	can_announce = 1
+
+	if(!message_in)
+		return
+	var/message_len = length(message_in)
+	var/message = copytext(message_in, 1, 280)
+
+	if(message_len != length(message))
+		if(alert("Your message was shortened to: \"[message]\", continue anyway?", "Too wordy!", "Yes", "No") != "Yes")
+			return
+
+
+	command_announcement(message, "Station Announcement by [src.name] (AI)")
+
+	last_announcement = world.time
+
+	logTheThing("say", usr, null, "created a command report: [message]")
+	logTheThing("diary", usr, null, "created a command report: [message]", "say")
 
 
 /mob/living/silicon/ai/proc/ai_vox_help()
