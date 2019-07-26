@@ -1776,8 +1776,6 @@ proc/get_mobs_trackable_by_AI()
 		src.show_text("This ability is still on cooldown for [round((announcement_cooldown + last_announcement - world.time) / 10)] seconds!", "red")
 		return
 
-	vox_reinit_check()
-
 	can_announce = 0
 	var/message_in = input(usr, "Please enter a message (280 characters)", "Station Announcement?", "") // I made an announcement in game on the announcement computer and this seemed to be the max length
 	can_announce = 1
