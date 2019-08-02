@@ -12,6 +12,7 @@
 	var/seal_hair = 0 // best variable name I could come up with, if 1 it forms a seal with a suit so no hair can stick out
 	cold_resistance = 10
 	heat_resistance = 5
+	var/block_vision = 0
 
 /obj/item/clothing/head/red
 	desc = "A knit cap in red."

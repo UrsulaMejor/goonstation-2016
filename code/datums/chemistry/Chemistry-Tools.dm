@@ -325,6 +325,23 @@
 		else
 			return ..()
 
+	attack_self(mob/user as mob)
+		if (src.reagents.total_volume)
+			user.show_text("<b>You turn the bucket upside down, causing it to spill!</b>", "red")
+			src.reagents.reaction(get_turf(src))
+		else
+			user.show_text("You turn the bucket upside down.", "red")
+		var/obj/item/clothing/head/helmet/bucket/hat/B = new /obj/item/clothing/head/helmet/bucket/hat(src.loc)
+		user.u_equip(src)
+		user.put_in_hand_or_drop(B)
+		qdel(src)
+
+	suicide(var/mob/user as mob)
+		user.u_equip(src)
+		src.set_loc(get_turf(user))
+		user.visible_message("<span style=\"color:red\"><b>[user] kicks the bucket!</b></span>")
+		user.death(0)
+
 /obj/item/reagent_containers/glass/dispenser
 	name = "reagent glass"
 	desc = "A reagent glass."

@@ -249,9 +249,66 @@
 	inhand_image_icon = 'icons/mob/inhand/hand_tools.dmi'
 	inhand_image = "bucket"
 
+	suicide(var/mob/user as mob)
+		user.u_equip(src)
+		src.set_loc(get_turf(user))
+		user.visible_message("<span style=\"color:red\"><b>[user] kicks the bucket!</b></span>")
+		user.death(0)
+
 	red
 		name = "red bucket helmet"
 		desc = "Someone's cut out a bit of this bucket so you can put it on your head. It's red, and it kinda remind you of something."
 		icon_state = "buckethelm-r"
 		item_state = "buckethelm-r"
 		inhand_image = "bucket-r"
+
+
+
+/obj/item/clothing/head/helmet/bucket/hat
+	name = "bucket hat"
+	desc = "Looks like this bucket has been turned upside down so it can be used as a hat."
+	icon_state = "buckethat"
+	item_state = "buckethat"
+	armor_value_melee = 2
+	inhand_image_icon = 'icons/mob/inhand/hand_tools.dmi'
+	inhand_image = "bucket"
+	block_vision = 1
+	seal_hair = 1
+
+	suicide(var/mob/user as mob)
+		user.u_equip(src)
+		src.set_loc(get_turf(user))
+		user.visible_message("<span style=\"color:red\"><b>[user] kicks the bucket!</b></span>")
+		user.death(0)
+
+	attack_self(mob/user as mob)
+		boutput(usr, "<span style=\"color:blue\">You turn the bucket right side up.</span>")
+		var/obj/item/reagent_containers/glass/bucket/B = new /obj/item/reagent_containers/glass/bucket(src.loc)
+		user.u_equip(src)
+		user.put_in_hand_or_drop(B)
+		qdel(src)
+		return
+
+	suicide(var/mob/user as mob)
+		user.u_equip(src)
+		src.set_loc(get_turf(user))
+		user.visible_message("<span style=\"color:red\"><b>[user] kicks the bucket!</b></span>")
+		user.death(0)
+
+
+	/* There are no non-helmet red buckets in 2016 so if they're added be sure to add this part as well
+	red
+		name = "red bucket hat"
+		desc = "Looks like this bucket has been turned upside down so it can be used as a hat. It's red."
+		icon_state = "buckethat-r"
+		item_state = "buckethat-r"
+		inhand_image = "bucket-r"
+
+		attack_self(mob/user as mob)
+			boutput(usr, "<span style=\"color:blue\">You turn the bucket right side up.</span>")
+			var/obj/item/reagent_containers/glass/bucket/red/B = new /obj/item/reagent_containers/glass/bucket/red(src.loc)
+			user.put_in_hand_or_drop(B)
+			qdel(src)
+			return
+
+	*/

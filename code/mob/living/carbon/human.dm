@@ -4649,6 +4649,11 @@
 			if (G.block_vision)
 				src.blinded = 1
 
+		if (istype(src.head, /obj/item/clothing/head))
+			var/obj/item/clothing/head/H = src.head
+			if (H.block_vision)
+				src.blinded = 1
+
 		//A ghost costume without eyeholes is a bad idea.
 		if (istype(src.wear_suit, /obj/item/clothing/suit/bedsheet))
 			var/obj/item/clothing/suit/bedsheet/B = src.wear_suit
