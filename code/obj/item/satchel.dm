@@ -44,6 +44,44 @@
 			src.satchel_updateicon()
 		else ..()
 
+	attack_hand(mob/user as mob)
+		if (get_dist(user, src) <= 0 && src.contents.len)
+			if (user.l_hand == src || user.r_hand == src)
+				if (user.a_intent == INTENT_GRAB && src.contents.len > 1)
+					user.visible_message("<span style=\"color:blue\"><b>[user]</b> digs through [src].</span>",\
+					"<span style=\"color:blue\">You digs through [src].</span>")
+					var/list/satchel_contents = list()
+					var/index = 0
+					var/temp = ""
+					for (var/obj/item/I in src.contents)
+						temp = ""
+						index = index + 1
+						temp = "[index] - [I.name]"
+						satchel_contents += temp
+						satchel_contents[temp] = I
+					var/chosenItem = input("Select an item to pull out.", "Choose Item") as null|anything in satchel_contents
+					if (!chosenItem)
+						return
+					var/obj/item/itemToGive = satchel_contents[chosenItem]
+					if (!itemToGive)
+						return
+					user.visible_message("<span style=\"color:blue\"><b>[usr]</b> takes [itemToGive.name] out of [src].</span>",\
+					"<span style=\"color:blue\">You take [itemToGive.name] from [src].</span>")
+					user.put_in_hand_or_drop(itemToGive)
+				else if  (user.a_intent == INTENT_DISARM && src.contents.len > 1)
+					user.visible_message("<span style=\"color:blue\"><b>[user]</b> rummages through [src].</span>",\
+					"<span style=\"color:blue\">You rummage through [src].</span>")
+					var/list/satchel_contents = list()
+					for (var/obj/item/I in src.contents)
+						satchel_contents += I
+					var/obj/item/chosenItem = pick(satchel_contents)
+					if (!chosenItem)
+						return
+					user.visible_message("<span style=\"color:blue\"><b>[usr]</b> takes [chosenItem.name] out of [src].</span>",\
+					"<span style=\"color:blue\">You take [chosenItem.name] from [src].</span>")
+					user.put_in_hand_or_drop(chosenItem)
+		return ..(user)
+
 	MouseDrop_T(atom/movable/O as obj, mob/user as mob)
 		var/proceed = 0
 		for(var/check_path in src.allowed)
