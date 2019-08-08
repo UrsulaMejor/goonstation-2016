@@ -51,14 +51,22 @@
 					user.visible_message("<span style=\"color:blue\"><b>[user]</b> digs through [src].</span>",\
 					"<span style=\"color:blue\">You digs through [src].</span>")
 					var/list/satchel_contents = list()
-					var/index = 0
+					var/list/has_dupes = list()
 					var/temp = ""
 					for (var/obj/item/I in src.contents)
 						temp = ""
-						index = index + 1
-						temp = "[index] - [I.name]"
-						satchel_contents += temp
-						satchel_contents[temp] = I
+						if (satchel_contents[I.name])
+							if (has_dupes[I.name])
+								has_dupes[I.name] = has_dupes[I.name] + 1
+							else
+								has_dupes[I.name] = 2
+							temp = "[I.name] ([has_dupes[I.name]])"
+							satchel_contents += temp
+							satchel_contents[temp] = I
+						else
+							temp = "[I.name]"
+							satchel_contents += temp
+							satchel_contents[temp] = I
 					var/chosenItem = input("Select an item to pull out.", "Choose Item") as null|anything in satchel_contents
 					if (!chosenItem)
 						return
