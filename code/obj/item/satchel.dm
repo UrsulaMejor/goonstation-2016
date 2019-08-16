@@ -47,7 +47,27 @@
 	attack_hand(mob/user as mob)
 		if (get_dist(user, src) <= 0 && src.contents.len)
 			if (user.l_hand == src || user.r_hand == src)
-				if (user.a_intent == INTENT_GRAB && src.contents.len > 1)
+				if  (src.contents.len > 1)
+					user.visible_message("<span style=\"color:blue\"><b>[user]</b> rummages through [src].</span>",\
+					"<span style=\"color:blue\">You rummage through [src].</span>")
+					var/list/satchel_contents = list()
+					for (var/obj/item/I in src.contents)
+						satchel_contents += I
+					var/obj/item/chosenItem = pick(satchel_contents)
+					if (!chosenItem)
+						return
+					user.visible_message("<span style=\"color:blue\"><b>[usr]</b> takes [chosenItem.name] out of [src].</span>",\
+					"<span style=\"color:blue\">You take [chosenItem.name] from [src].</span>")
+					user.put_in_hand_or_drop(chosenItem)
+		return ..(user)
+
+	verb/search_through(mob/user as mob)
+		set name = "Search Through Contents"
+		set src in usr
+
+		if (get_dist(user, src) <= 0 && src.contents.len)
+			if (user.l_hand == src || user.r_hand == src)
+				if (src.contents.len > 1)
 					user.visible_message("<span style=\"color:blue\"><b>[user]</b> digs through [src].</span>",\
 					"<span style=\"color:blue\">You digs through [src].</span>")
 					var/list/satchel_contents = list()
@@ -76,19 +96,6 @@
 					user.visible_message("<span style=\"color:blue\"><b>[usr]</b> takes [itemToGive.name] out of [src].</span>",\
 					"<span style=\"color:blue\">You take [itemToGive.name] from [src].</span>")
 					user.put_in_hand_or_drop(itemToGive)
-				else if  (user.a_intent == INTENT_DISARM && src.contents.len > 1)
-					user.visible_message("<span style=\"color:blue\"><b>[user]</b> rummages through [src].</span>",\
-					"<span style=\"color:blue\">You rummage through [src].</span>")
-					var/list/satchel_contents = list()
-					for (var/obj/item/I in src.contents)
-						satchel_contents += I
-					var/obj/item/chosenItem = pick(satchel_contents)
-					if (!chosenItem)
-						return
-					user.visible_message("<span style=\"color:blue\"><b>[usr]</b> takes [chosenItem.name] out of [src].</span>",\
-					"<span style=\"color:blue\">You take [chosenItem.name] from [src].</span>")
-					user.put_in_hand_or_drop(chosenItem)
-		return ..(user)
 
 	MouseDrop_T(atom/movable/O as obj, mob/user as mob)
 		var/proceed = 0
