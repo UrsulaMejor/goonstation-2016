@@ -64,6 +64,39 @@ MISC KITCHENWARE
 				user.suiciding = 0
 		return 1
 
+/obj/item/kitchen/utensil/fork/plastic
+	name = "plastic fork"
+	icon_state = "fork_plastic"
+	hitsound = 'sound/effects/bloody_stab.ogg'
+	desc = "A cheap plastic fork, prone to breaking. Helps with eating some foods."
+	force = 1.0
+	throwforce = 1.0
+
+	attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+		if (user && user.bioHolder.HasEffect("clumsy") && prob(50))
+			user.visible_message("<span style=\"color:red\"><b>[user]</b> fumbles [src] and stabs \himself.</span>")
+			random_brute_damage(user, 5)
+		if (prob(20))
+			src.break_fork(user)
+			return
+		if (!saw_surgery(M,user))
+			return ..()
+
+	proc/break_fork(mob/living/carbon/user as mob)
+		user.visible_message("<span style=\"color:red\">[src] breaks!</span>")
+		playsound(user.loc, "sound/effects/snap.ogg", 30, 1)
+		user.u_equip(src)
+		qdel(src)
+		return
+
+	suicide(var/mob/user as mob)
+		user.visible_message("<span style=\"color:red\"><b>[user] tries to stab [src] right into \his heart!</b></span>")
+		src.break_fork(user)
+		spawn(100)
+			if (user)
+				user.suiciding = 0
+		return 1
+
 /obj/item/kitchen/utensil/knife
 	name = "knife"
 	icon_state = "knife"
@@ -90,6 +123,40 @@ MISC KITCHENWARE
 				user.suiciding = 0
 		return 1
 
+/obj/item/kitchen/utensil/knife/plastic
+	name = "knife"
+	icon_state = "knife_plastic"
+	hit_type = DAMAGE_STAB
+	hitsound = 'sound/weapons/slashcut.ogg'
+	force = 1.0
+	throwforce = 1.0
+	desc = "A long bit plastic that is serated on one side, prone to breaking. It is used for cutting foods. Also useful for butchering dead animals, somehow."
+
+	attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+		if (user && user.bioHolder.HasEffect("clumsy") && prob(50))
+			user.visible_message("<span style=\"color:red\"><b>[user]</b> fumbles [src] and cuts \himself.</span>")
+			random_brute_damage(user, 5)
+		if (prob(20))
+			src.break_knife(user)
+			return
+		if (!scalpel_surgery(M,user))
+			return ..()
+
+	suicide(var/mob/user as mob)
+		user.visible_message("<span style=\"color:red\"><b>[user] tries to slash  \his own throat with [src]!</b></span>")
+		src.break_knife(user)
+		spawn(100)
+			if (user)
+				user.suiciding = 0
+		return 1
+
+	proc/break_knife(mob/living/carbon/user as mob)
+		user.visible_message("<span style=\"color:red\">[src] breaks!</span>")
+		playsound(user.loc, "sound/effects/snap.ogg", 30, 1)
+		user.u_equip(src)
+		qdel(src)
+		return
+
 /obj/item/kitchen/utensil/spoon
 	name = "spoon"
 	desc = "A metal object that has a handle and ends in a small concave oval. Used to carry liquid objects from the container to the mouth."
@@ -108,6 +175,38 @@ MISC KITCHENWARE
 		playsound(user.loc, src.hitsound, 50, 1)
 		user.TakeDamage("head", 150, 0)
 		user.updatehealth()
+		spawn(100)
+			if (user)
+				user.suiciding = 0
+		return 1
+
+/obj/item/kitchen/utensil/spoon/plastic
+	name = "plastic spoon"
+	icon_state = "spoon_plastic"
+	desc = "A cheap plastic spoon, prone to breaking. Used to carry liquid objects from the container to the mouth."
+	force = 1.0
+	throwforce = 1.0
+
+	attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+		if (user && user.bioHolder.HasEffect("clumsy") && prob(50))
+			user.visible_message("<span style=\"color:red\"><b>[user]</b> fumbles [src] and jabs \himself.</span>")
+			random_brute_damage(user, 5)
+		if (prob(20))
+			src.break_spoon(user)
+			return
+		if (!spoon_surgery(M,user))
+			return ..()
+
+	proc/break_spoon(mob/living/carbon/user as mob)
+		user.visible_message("<span style=\"color:red\">[src] breaks!</span>")
+		playsound(user.loc, "sound/effects/snap.ogg", 30, 1)
+		user.u_equip(src)
+		qdel(src)
+		return
+
+	suicide(var/mob/user as mob)
+		user.visible_message("<span style=\"color:red\"><b>[user] tries to jab [src] straight through \his eye and into \his brain!</b></span>")
+		src.break_spoon(user)
 		spawn(100)
 			if (user)
 				user.suiciding = 0

@@ -135,8 +135,24 @@
 						boutput(M, "<span style=\"color:red\">You need a fork to eat [src]!</span>")
 						M.visible_message("<span style=\"color:red\">[user] stares glumly at [src].</span>")
 						return
+					if (src.needfork && user.find_in_hands(/obj/item/kitchen/utensil/fork/plastic) && prob(20))
+						// this can be kinda fucky if they're eating with two forks in hand.
+						// basically, the fork in their left hand will always be chosen
+						// I guess people in space are all left handed
+						var/obj/item/kitchen/utensil/fork/plastic/F = user.find_in_hands(/obj/item/kitchen/utensil/fork/plastic)
+						F.break_fork(M)
+						M.visible_message("<span style=\"color:red\">[user] stares glumly at [src].</span>")
+						return
 					if (src.needspoon && !user.find_in_hands(/obj/item/kitchen/utensil/spoon))
 						boutput(M, "<span style=\"color:red\">You need a spoon to eat [src]!</span>")
+						M.visible_message("<span style=\"color:red\">[user] stares glumly at [src].</span>")
+						return
+					if (src.needspoon && user.find_in_hands(/obj/item/kitchen/utensil/spoon/plastic) && prob(20))
+						// this can be kinda fucky if they're eating with two forks in hand.
+						// basically, the fork in their left hand will always be chosen
+						// I guess people in space are all left handed
+						var/obj/item/kitchen/utensil/spoon/plastic/S = user.find_in_hands(/obj/item/kitchen/utensil/spoon/plastic)
+						S.break_spoon(M)
 						M.visible_message("<span style=\"color:red\">[user] stares glumly at [src].</span>")
 						return
 				M.visible_message("<span style=\"color:blue\">[M] takes a bite of [src]!</span>",\
