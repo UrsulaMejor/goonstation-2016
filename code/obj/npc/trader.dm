@@ -22,6 +22,7 @@
 	var/pickupdialoguefailure = null
 	var/list/trader_area = "/area/trade_outpost/martian"
 	var/doing_a_thing = 0
+	var/goods_buy_sorted[]
 
 		// This list is in a specific order!!
 	// String 1 - player is being dumb and hiked a price up when buying, trader accepted it because they're a dick
@@ -261,8 +262,44 @@
 				sellitem = /obj/item/electronics
 			if(ispath(sellitem, /obj/item/parts/robot_parts))
 				sellitem = /obj/item/parts/robot_parts
-			for(var/datum/commodity/N in goods_buy)
-				if(N.comtype == src.sellitem.type)
+
+			/* URS NOTE:
+
+			What follows is a bit of of weirdness that should honestly go into the trader's New(). It builds an ordered list out of goods_buy called goods_buy_sorted
+			The goods_buy_sorted list ensures that when the trader buys an item, they buy the most-childy items first; e.g., it will buy herb/cannabis/omega before herb/cannabis
+			The reason for this is that the current (N.comtype == sellitem.type) leads to unituitive results, as child items of parent items cannot be sold as the parent item
+			This becomes a problem when herb/cannabis/omega/spawnable, aka, the kind of omega weed spawned in loot crates, cannot be sold as herb/cannabis/omega
+			However, replacing this with istype(sellitem,N.comtype) means that if herb/cannabis comes first in the trader's goods_buy, it will sell herb/cannabis/omega as herb/cannabis
+			Basically, this sort ensures that herb/cannabis/omega gets sold before herb/cannabis.
+			Now, this should probably go into the parent trader's New(), but the parent New() gets called in sub-traders before adding on any of the commodities for trade
+			This means that I would be doing the sort before the items are even added, and I don't know enough about how traders work to feel comfortable moving the ..() to the end
+
+			END URS NOTE*/
+
+			if(!goods_buy_sorted) //if list not yet initialized, initialize it
+				var/temp[1]
+				src.goods_buy_sorted = temp //initialize list as indexed list with one element
+				var/sorted = 0
+				for(var/datum/commodity/N in goods_buy)
+					if(sorted == goods_buy.len)
+						break
+					else if (sorted == 0)
+						goods_buy_sorted[1] = N
+						sorted++
+					else
+						for (var/i=1, i<=sorted,i++)
+							if(length("[N.comtype]") > length("[goods_buy_sorted[i].comtype]"))
+								goods_buy_sorted.Insert(i,N) //insert in front of item at index i
+								sorted++
+								break
+							if (i==sorted)
+								goods_buy_sorted.Insert(0,N) //insert at end of list
+								sorted++
+								break
+
+			for(var/datum/commodity/N in goods_buy_sorted)
+				if(istype(src.sellitem,N.comtype))
+					world.log << "Selling [src.sellitem.type] as [N.comtype]"
 					var/datum/data/record/account = null
 					account = FindBankAccountByName(src.scan.registered)
 					if (!account)
@@ -490,17 +527,44 @@
 				user.visible_message("<span style=\"color:blue\">[src] rummages through [user]'s [O].</span>")
 				playsound(src.loc, "rustle", 60, 1)
 				var/cratevalue = null
+
+				//HEY? YOU CONFUSED ABOUT THIS NEXT PART? READ THE URS NOTE ABOVE IN THE "Actually Sell the item" SECTION!!!
+
+				if(!goods_buy_sorted) //if list not yet initialized, initialize it
+					var/temp[1]
+					src.goods_buy_sorted = temp //initialize list as indexed list with one element
+					var/sorted = 0
+					for(var/datum/commodity/N in goods_buy)
+						if(sorted == goods_buy.len)
+							break
+						else if (sorted == 0)
+							goods_buy_sorted[1] = N
+							sorted++
+						else
+							for (var/i=1, i<=sorted,i++)
+								if(length("[N.comtype]") > length("[goods_buy_sorted[i].comtype]"))
+									goods_buy_sorted.Insert(i,N) //insert in front of item at index i
+									sorted++
+									break
+								if (i==sorted)
+									goods_buy_sorted.Insert(0,N) //insert at end
+									sorted++
+									break
+
 				for (var/obj/M in O.contents)
 					//boutput(world, "<span style=\"color:blue\">HELLO I AM [M]</span>")
 					//boutput(world, "<span style=\"color:blue\">AND MY TYPE PATH IS [M.type]</span>")
-					for(var/datum/commodity/N in src.goods_buy)
+
+					for(var/datum/commodity/N in goods_buy_sorted)
 						if(M) // fuck the hell off you dirty null.type errors
-							if(N.comtype == M.type)
+							if(istype(M,N.comtype))
+								world.log << "Selling [M.type] as [N.comtype]"
 								//boutput(world, "<b>MY ASSOCIATED DATUM IS [N]</b>")
 								//boutput(world, "<span style=\"color:blue\">[M] IS GOING TO SELL FOR [N.price] HOT BALLS</span>")
 								//boutput(world, "<span style=\"color:blue\">UPDATING CRATE VALUE TO [cratevalue] OR FUCKING ELSE</span>")
 								cratevalue += N.price
 								qdel( M )
+								break
 				if(cratevalue)
 					boutput(user, "<span style=\"color:blue\">[src] takes what they want from [O]. [cratevalue] credits have been transferred to your account.</span>")
 					account.fields["current_money"] += cratevalue
