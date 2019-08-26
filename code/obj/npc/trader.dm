@@ -265,14 +265,14 @@
 
 			/* URS NOTE:
 
-			What follows is a bit of of weirdness that should honestly go into the trader's New(). It builds an ordered list out of goods_buy called goods_buy_sorted
-			The goods_buy_sorted list ensures that when the trader buys an item, they buy the most-childy items first; e.g., it will buy herb/cannabis/omega before herb/cannabis
-			The reason for this is that the current (N.comtype == sellitem.type) leads to unituitive results, as child items of parent items cannot be sold as the parent item
-			This becomes a problem when herb/cannabis/omega/spawnable, aka, the kind of omega weed spawned in loot crates, cannot be sold as herb/cannabis/omega
-			However, replacing this with istype(sellitem,N.comtype) means that if herb/cannabis comes first in the trader's goods_buy, it will sell herb/cannabis/omega as herb/cannabis
-			Basically, this sort ensures that herb/cannabis/omega gets sold before herb/cannabis.
-			Now, this should probably go into the parent trader's New(), but the parent New() gets called in sub-traders before adding on any of the commodities for trade
-			This means that I would be doing the sort before the items are even added, and I don't know enough about how traders work to feel comfortable moving the ..() to the end
+What follows is a bit of of weirdness that should honestly go into the trader's New(). It builds an ordered list out of goods_buy called goods_buy_sorted
+The goods_buy_sorted list ensures that when the trader buys an item, they buy the most-childy items first; e.g., it will buy herb/cannabis/omega before herb/cannabis
+The reason for this is that the current (N.comtype == sellitem.type) leads to unituitive results, as child items of parent items cannot be sold as the parent item
+This becomes a problem when herb/cannabis/omega/spawnable, aka, the kind of omega weed spawned in loot crates, cannot be sold as herb/cannabis/omega
+However, replacing this with istype(sellitem,N.comtype) means that if herb/cannabis comes first in the trader's goods_buy, it will sell herb/cannabis/omega as herb/cannabis
+Basically, this sort ensures that herb/cannabis/omega gets sold before herb/cannabis.
+Now, this should probably go into the parent trader's New(), but the parent New() gets called in sub-traders before adding on any of the commodities for trade
+This means that I would be doing the sort before the items are even added, and I don't know enough about how traders work to feel comfortable moving the ..() to the end
 
 			END URS NOTE*/
 
@@ -299,7 +299,6 @@
 
 			for(var/datum/commodity/N in goods_buy_sorted)
 				if(istype(src.sellitem,N.comtype))
-					world.log << "Selling [src.sellitem.type] as [N.comtype]"
 					var/datum/data/record/account = null
 					account = FindBankAccountByName(src.scan.registered)
 					if (!account)
@@ -558,7 +557,6 @@
 					for(var/datum/commodity/N in goods_buy_sorted)
 						if(M) // fuck the hell off you dirty null.type errors
 							if(istype(M,N.comtype))
-								world.log << "Selling [M.type] as [N.comtype]"
 								//boutput(world, "<b>MY ASSOCIATED DATUM IS [N]</b>")
 								//boutput(world, "<span style=\"color:blue\">[M] IS GOING TO SELL FOR [N.price] HOT BALLS</span>")
 								//boutput(world, "<span style=\"color:blue\">UPDATING CRATE VALUE TO [cratevalue] OR FUCKING ELSE</span>")
