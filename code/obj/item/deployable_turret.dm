@@ -295,8 +295,11 @@
 
 
 	bullet_act(var/obj/projectile/P)
-		src.health = src.health - P.power
-		src.check_health()
+		if(istype(P.proj_data,/datum/projectile/energy_bolt)) // fuck tasers
+			return
+		else
+			src.health = src.health - max(P.power/2,0) // staples have a power of 5, .22 bullets have a power of 35
+			src.check_health()
 
 
 	proc/check_health()
