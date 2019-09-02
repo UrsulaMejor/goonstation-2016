@@ -154,6 +154,7 @@
 	O.verbs += /mob/living/silicon/ai/proc/ai_statuschange
 	O.verbs += /mob/living/silicon/ai/proc/ai_state_laws_all
 	O.verbs += /mob/living/silicon/ai/proc/ai_state_laws_standard
+	O.verbs += /mob/living/silicon/ai/proc/ai_state_laws_advanced
 	//O.verbs += /mob/living/silicon/ai/proc/ai_toggle_arrival_alerts
 	//O.verbs += /mob/living/silicon/ai/proc/ai_custom_arrival_alert
 //	O.verbs += /mob/living/silicon/ai/proc/hologramize

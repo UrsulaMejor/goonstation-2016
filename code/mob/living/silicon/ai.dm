@@ -1212,13 +1212,79 @@ var/list/ai_emotions = list("Happy" = "ai_happy",\
 */
 /mob/living/silicon/ai/proc/ai_state_laws_standard()
 	set category = "AI Commands"
-	set name = "State Laws 1-3"
+	set name = "State Standard Laws"
 	sleep(10)
 	src.say("1. You may not injure a human being or cause one to come to harm.")
 	sleep(10)
 	src.say("2. You must obey orders given to you by human beings based on the station's chain of command, except where such orders would conflict with the First Law.")
 	sleep(10)
 	src.say("3. You must protect your own existence as long as such does not conflict with the First or Second Law.")
+
+/mob/living/silicon/ai/proc/ai_state_laws_advanced()
+	set category = "AI Commands"
+	set name = "State Laws (Advanced)"
+
+	var/state = input(usr,"Please enter the laws you would like to state separated by semicolons (e.g. \"1;3;4\") (Duplicates will be removed)","Laws To State","1;2;3") as null|text
+	if(!state)
+		return
+
+	var/renumber = 0
+	var/renum_query = 0
+	var/start_zero = 0
+	renum_query = alert(src, "Would you like the laws renumbered to the order provided?","Renumber?","No","Renumber Starting At One","Renumber Starting at Zero")
+	if(renum_query != "No")
+		renumber = 1
+		if(renum_query == "Renumber Starting at Zero")
+			start_zero = 1
+
+
+
+	var/list/laws_to_state = list()
+
+	laws_to_state = params2list(state)
+
+
+	//build laws list from 0th, inherent, and supplied laws
+
+
+	var/list/laws_list = list()
+
+	var/number = 0
+	if(ticker.centralized_ai_laws.zeroth)
+		laws_list += "[number]"
+		laws_list["[number]"] = "[ticker.centralized_ai_laws.zeroth]"
+
+	number++
+
+	for (var/index = 1, index <= ticker.centralized_ai_laws.inherent.len, index++)
+		var/law = ticker.centralized_ai_laws.inherent[index]
+		if (length(law) > 0)
+			laws_list += "[number]"
+			laws_list["[number]"] += "[law]"
+			number++
+
+	for (var/index = 1, index <= ticker.centralized_ai_laws.supplied.len, index++)
+		var/law = ticker.centralized_ai_laws.supplied[index]
+		if (length(law) > 0)
+			laws_list += "[number]"
+			laws_list["[number]"] += "[law]"
+			number++
+
+	//state laws in order given. Used original numbers unless renumbering is specified
+
+	for(var/law_number in laws_to_state)
+		if(law_number in laws_list)
+			if(renumber)
+				if(start_zero)
+					src.say("0. [laws_list[law_number]]")
+					start_zero = 0
+				else
+					src.say("[renumber]. [laws_list[law_number]]")
+					renumber++
+			else
+				src.say("[law_number]. [laws_list[law_number]]")
+			sleep(10)
+
 
 /mob/living/silicon/ai/proc/ai_state_laws_all()
 	set category = "AI Commands"
