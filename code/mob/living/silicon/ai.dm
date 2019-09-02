@@ -1224,20 +1224,9 @@ var/list/ai_emotions = list("Happy" = "ai_happy",\
 	set category = "AI Commands"
 	set name = "State Laws (Advanced)"
 
-	var/state = input(usr,"Please enter the laws you would like to state separated by semicolons (e.g. \"1;3;4\") (Duplicates will be removed)","Laws To State","1;2;3") as null|text
+	var/state = input(usr,"Please enter the laws you would like to state in pairs of (law number)=(fake number, if desired) separated by semicolons (e.g. \"1;3=2;4=3\") (Each law will only be stated once, duplicates will be removed)","Laws To State","1;2;3") as null|text
 	if(!state)
 		return
-
-	var/renumber = 0
-	var/renum_query = 0
-	var/start_zero = 0
-	renum_query = alert(src, "Would you like the laws renumbered to the order provided?","Renumber?","No","Renumber Starting At One","Renumber Starting at Zero")
-	if(renum_query != "No")
-		renumber = 1
-		if(renum_query == "Renumber Starting at Zero")
-			start_zero = 1
-
-
 
 	var/list/laws_to_state = list()
 
@@ -1274,13 +1263,8 @@ var/list/ai_emotions = list("Happy" = "ai_happy",\
 
 	for(var/law_number in laws_to_state)
 		if(law_number in laws_list)
-			if(renumber)
-				if(start_zero)
-					src.say("0. [laws_list[law_number]]")
-					start_zero = 0
-				else
-					src.say("[renumber]. [laws_list[law_number]]")
-					renumber++
+			if(laws_to_state[law_number])
+				src.say("[laws_to_state[law_number]]. [laws_list[law_number]]")
 			else
 				src.say("[law_number]. [laws_list[law_number]]")
 			sleep(10)
