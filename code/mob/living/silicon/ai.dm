@@ -1232,6 +1232,23 @@ var/list/ai_emotions = list("Happy" = "ai_happy",\
 
 	laws_to_state = params2list(state)
 
+	// 1;1;1 becomes 1:list() and 1=2;1=3 becomes 1:(2,3), so we need to break the results down into one association per index
+
+	var/found = 0
+	for (var/index in laws_to_state)
+		if(laws_to_state[index])
+			for (var/association in laws_to_state[index])
+				if(association)
+					laws_to_state[index] = association
+					found = 1
+					break
+
+			if(!found)
+				laws_to_state[index] = null
+
+			found = 0
+
+
 
 	//build laws list from 0th, inherent, and supplied laws
 
@@ -1259,7 +1276,7 @@ var/list/ai_emotions = list("Happy" = "ai_happy",\
 			laws_list["[number]"] += "[law]"
 			number++
 
-	//state laws in order given. Used original numbers unless renumbering is specified
+	//state laws in order given. Uses original numbers unless renumbering is specified
 
 	for(var/law_number in laws_to_state)
 		if(law_number in laws_list)
