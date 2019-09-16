@@ -7,10 +7,13 @@
 	w_class = 1
 	var/maxitems = 30
 	var/list/allowed = list(/obj/item/)
+	var/satchelstring = "leather bag"
 	var/itemstring = "items"
+	var/has_counter = 1
 
 	New()
-		src.overlays += image('icons/obj/items.dmi', "satcounter0")
+		if(has_counter)
+			src.overlays += image('icons/obj/items.dmi', "satcounter0")
 		..()
 
 	attackby(obj/item/W as obj, mob/user as mob)
@@ -29,7 +32,7 @@
 			W.dropped()
 			boutput(user, "<span style=\"color:blue\">You put [W] in [src].</span>")
 			var/itemamt = src.contents.len
-			src.desc = "A leather bag. It holds [itemamt]/[src.maxitems] [src.itemstring]."
+			src.desc = "A [src.satchelstring]. It holds [itemamt]/[src.maxitems] [src.itemstring]."
 			if (itemamt == src.maxitems) boutput(user, "<span style=\"color:blue\">[src] is now full!</span>")
 			src.satchel_updateicon()
 		else boutput(user, "<span style=\"color:red\">[src] is full!</span>")
@@ -40,7 +43,7 @@
 			for (var/obj/item/I in src.contents)
 				I.set_loc(T)
 			boutput(user, "<span style=\"color:blue\">You empty out [src].</span>")
-			src.desc = "A leather bag. It holds 0/[src.maxitems] [src.itemstring]."
+			src.desc = "A [src.satchelstring]. It holds 0/[src.maxitems] [src.itemstring]."
 			src.satchel_updateicon()
 		else ..()
 
@@ -64,7 +67,7 @@
 					continue
 				I.set_loc(src)
 				amt = src.contents.len
-				src.desc = "A leather bag. It holds [amt]/[src.maxitems] [src.itemstring]."
+				src.desc = "A [src.satchelstring]. It holds [amt]/[src.maxitems] [src.itemstring]."
 				src.satchel_updateicon()
 				sleep(2)
 				if (user.loc != staystill) break
@@ -75,6 +78,8 @@
 		else boutput(user, "<span style=\"color:red\">[src] is full!</span>")
 
 	proc/satchel_updateicon()
+		if(!has_counter)
+			return
 		var/perc
 		if (src.contents.len > 0 && src.maxitems > 0)
 			perc = (src.contents.len / src.maxitems) * 100
@@ -109,3 +114,53 @@
 	/obj/item/parts/human_parts/leg,
 	/obj/item/raw_material/cotton)
 	itemstring = "items of produce"
+
+/obj/item/satchel/figurines
+	name = "figurine case"
+	desc = "A plastic case. It holds 0/30 figurines."
+	icon_state = "figurinecase"
+	maxitems = 30
+	allowed = list(/obj/item/toy/figure)
+	satchelstring = "plastic case"
+	itemstring = "figurines"
+	has_counter = 0
+	flags = null
+	w_class = 3
+
+	satchel_updateicon()
+		..()
+		flick("figurinecase-open",src)
+
+
+	MouseDrop_T(atom/movable/O as obj, mob/user as mob)
+		var/proceed = 0
+		for(var/check_path in src.allowed)
+			if(istype(O, check_path))
+				proceed = 1
+				break
+		if (!proceed)
+			boutput(user, "<span style=\"color:red\">[src] cannot hold that kind of item!</span>")
+			return
+
+		if (src.contents.len < src.maxitems)
+			icon_state = "figurinecase_open"
+			user.visible_message("<span style=\"color:blue\">[user] begins quickly filling [src]!</span>")
+			var/staystill = user.loc
+			var/amt
+
+			for(var/obj/item/I in view(1,user))
+				if (!istype(I, O)) continue
+				if (I in user)
+					continue
+				I.set_loc(src)
+				amt = src.contents.len
+				src.desc = "A [src.satchelstring]. It holds [amt]/[src.maxitems] [src.itemstring]."
+				src.satchel_updateicon()
+				sleep(2)
+				if (user.loc != staystill) break
+				if (src.contents.len >= src.maxitems)
+					boutput(user, "<span style=\"color:blue\">[src] is now full!</span>")
+					break
+			icon_state = "figurinecase"
+			boutput(user, "<span style=\"color:blue\">You finish filling [src]!</span>")
+		else boutput(user, "<span style=\"color:red\">[src] is full!</span>")
