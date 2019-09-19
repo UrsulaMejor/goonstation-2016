@@ -1151,6 +1151,17 @@
 	else
 		return attack_hand(user)
 
+/turf/simulated/floor/MouseDrop_T(atom/A, mob/user as mob)
+	..(A,user)
+	if(istype(A,/turf/simulated/floor))
+		var/turf/simulated/floor/F = A
+		var/obj/item/I = user.equipped()
+		if(I)
+			if(istype(I,/obj/item/cable_coil))
+				var/obj/item/cable_coil/C = I
+				if((get_dist(user,F)<2) & (get_dist(user,src)<2))
+					C.move_callback(user, F, src)
+
 ////////////////////////////////////////////ADVENTURE SIMULATED FLOORS////////////////////////
 
 
