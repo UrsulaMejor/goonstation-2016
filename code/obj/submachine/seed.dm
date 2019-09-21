@@ -388,23 +388,33 @@
 
 				var/dominance = P1DNA.alleles[1] - P2DNA.alleles[1]
 				var/datum/plant/dominantspecies = null
+				//var/datum/plant/submissivespecies = null
 				var/datum/plantgenes/dominantDNA = null
+				var/datum/plantgenes/submissiveDNA = null
 
 				// Establish which species allele is dominant
 				if (dominance > 0)
 					dominantspecies = P1
+					//submissivespecies = P2
 					dominantDNA = P1DNA
+					submissiveDNA = P2DNA
 				else if (dominance < 0)
 					dominantspecies = P2
+					//submissivespecies = P1
 					dominantDNA = P2DNA
+					submissiveDNA = P1DNA
 				else
 					// If neither, we pick randomly unlike the rest of the allele resolutions
 					if (prob(50))
 						dominantspecies = P1
+						//submissivespecies = P2
 						dominantDNA = P1DNA
+						submissiveDNA = P2DNA
 					else
 						dominantspecies = P2
+						//submissivespecies = P1
 						dominantDNA = P2DNA
+						submissiveDNA = P1DNA
 
 				// Set up the base variables first
 				if (!dominantspecies.hybrid)
@@ -441,7 +451,11 @@
 
 				P.commuts = P1.commuts | P2.commuts // We merge these and share them
 				DNA.commuts = P1DNA.commuts | P2DNA.commuts
-				P.assoc_reagents = P1.assoc_reagents | P2.assoc_reagents
+
+				if(submissiveDNA.mutation)
+					P.assoc_reagents = P1.assoc_reagents | P2.assoc_reagents | submissiveDNA.mutation.assoc_reagents // URS EDIT -- BOTANY UNLEASHED?
+				else
+					P.assoc_reagents = P1.assoc_reagents | P2.assoc_reagents
 
 				// Now we start combining genetic traits based on allele dominance
 				// If one is dominant and the other recessive, use the dominant value
