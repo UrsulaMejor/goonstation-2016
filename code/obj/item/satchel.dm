@@ -44,7 +44,7 @@
 			src.satchel_updateicon()
 		else ..()
 
-	attack_hand(mob/user as mob)
+	attack_hand(var/mob/user as mob)
 		if (get_dist(user, src) <= 0 && src.contents.len)
 			if (user.l_hand == src || user.r_hand == src)
 				if  (src.contents.len > 1)
@@ -61,11 +61,16 @@
 					user.put_in_hand_or_drop(chosenItem)
 		return ..(user)
 
-	verb/search_through(mob/user as mob)
+	verb/search_through()
 		set name = "Search Through Contents"
 		set src in usr
 
-		if (get_dist(user, src) <= 0 && src.contents.len)
+		var/mob/living/user = usr
+
+		if(!istype(user))
+			return
+
+		if (get_dist(user, src) <= 0 && src.contents.len && !user.stat)
 			if (user.l_hand == src || user.r_hand == src)
 				if (src.contents.len > 1)
 					user.visible_message("<span style=\"color:blue\"><b>[user]</b> digs through [src].</span>",\
