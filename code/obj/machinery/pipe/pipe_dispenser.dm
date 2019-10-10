@@ -117,6 +117,10 @@
 
 
 	proc/lay_pipe(var/turf/newloc,var/turf/oldloc,var/direction)
+
+		if(newloc.intact && !istype(newloc,/turf/space))
+			return
+
 		if(!find_pipe(newloc))
 			var/obj/disposalpipe/segment/S = new/obj/disposalpipe/segment(newloc)
 			S.dir = direction
@@ -227,10 +231,7 @@
 		return
 
 /obj/machinery/disposal_pipedispenser/mobile/attack_hand(user as mob)
-	if(..())
-		return
 	var/startstop = (src.laying_pipe ? "Stop" : "Start")
-
 	var/dat = {"<b>Disposal Pipes</b><br><br>
 <A href='?src=\ref[src];dmake=0'>Pipe</A><BR>
 <A href='?src=\ref[src];dmake=1'>Bent Pipe</A><BR>
