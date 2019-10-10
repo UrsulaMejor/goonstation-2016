@@ -131,13 +131,32 @@
 				if((old_pipe.dir == direction) || (turn(old_pipe.dir,180) == direction)) // no change necessary
 					return
 
-				var/obj/disposalpipe/D = find_pipe(get_step(get_turf(old_pipe),old_pipe.dir))
-				if(D) // already existing connection
-					if(D.dpdir & get_dir(D,old_pipe))
-						return
+				var/list/seek_directions = list()
+
+				if(old_pipe.dpdir & 1)
+					seek_directions += 1
+
+				if(old_pipe.dpdir & 2)
+					seek_directions += 2
+
+				if(old_pipe.dpdir & 4)
+					seek_directions += 4
+
+				if(old_pipe.dpdir & 8)
+					seek_directions += 8
+
+				for(var/direct in seek_directions)
+					var/obj/disposalpipe/D = find_pipe(get_step(get_turf(old_pipe),direct))
+					if(D) // already existing connection
+						if(D.dpdir & get_dir(D,old_pipe)) //pipe points towards us
+							seek_directions -= direct
+
+				var/check_dir = null
+				if(seek_directions.len)
+					check_dir = pick(seek_directions) //idk why the fuck not, okay? get off my back. maybe we make this upgrade it to a junction, idk
 
 				var/c_dir = null
-				switch(old_pipe.dir) // hacky but i couldn't find a better way to manage this since I couldn't see the pattern to the resulting bent pipe directions
+				switch(check_dir) // hacky but i couldn't find a better way to manage this since I couldn't see a convenient pattern to the resulting bent pipe directions
 					if(1)
 						switch(direction)
 							if(4)
@@ -210,6 +229,7 @@
 /obj/machinery/disposal_pipedispenser/mobile/attack_hand(user as mob)
 	if(..())
 		return
+	var/startstop = (src.laying_pipe ? "Stop" : "Start")
 
 	var/dat = {"<b>Disposal Pipes</b><br><br>
 <A href='?src=\ref[src];dmake=0'>Pipe</A><BR>
@@ -217,7 +237,7 @@
 <A href='?src=\ref[src];dmake=2'>Junction</A><BR>
 <A href='?src=\ref[src];dmake=3'>Y-Junction</A><BR>
 <A href='?src=\ref[src];dmake=4'>Trunk</A><BR><BR>
-<A href='?src=\ref[src];dmake=5'>Start/Stop Laying Pipe Automatically</A><BR>
+<A href='?src=\ref[src];dmake=5'>[startstop] Laying Pipe Automatically</A><BR>
 "}
 
 	user << browse("<HEAD><TITLE>Disposal Pipe Dispenser</TITLE></HEAD><TT>[dat]</TT>", "window=pipedispenser")
