@@ -55,7 +55,8 @@
 		..()
 		src.visible_message("<span style=\"color:red\">[src] splats onto the floor messily!</span>")
 		playsound(src.loc, "sound/effects/splat.ogg", 100, 1)
-		new /obj/decal/cleanable/tomatosplat(T)
+		var/obj/decal/cleanable/tomatosplat/splat = new /obj/decal/cleanable/tomatosplat(T)
+		src.reagents.trans_to(splat,5)
 		qdel(src)
 
 /obj/item/reagent_containers/food/snacks/plant/tomato/explosive
