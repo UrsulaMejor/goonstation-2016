@@ -180,6 +180,12 @@
 	desc = "Fibers from the stem of a Venne vine. Though tasting foul, it has remarkable anti-toxic properties."
 	icon_state = "venne"
 
+/obj/item/plant/herb/sassafras
+	name = "sassafras root"
+	desc = "Roots from a Sassafras tree. Can be fermented into delicious sarsaparilla."
+	icon_state = "sassafras"
+	brew_result = "sarsaparilla"
+
 /obj/item/plant/herb/venne/toxic
 	name = "black venne fibers"
 	desc = "It's black and greasy. Kinda gross."

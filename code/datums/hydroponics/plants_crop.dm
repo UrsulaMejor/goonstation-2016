@@ -41,7 +41,7 @@
 	name = "Bean"
 	category = "Miscellaneous"
 	seedcolor = "#AA7777"
-	crop = /obj/item/reagent_containers/food/snacks/ingredient/bean
+	crop = /obj/item/reagent_containers/food/snacks/plant/bean
 	starthealth = 40
 	growtime = 50
 	harvtime = 130
@@ -49,8 +49,9 @@
 	harvests = 5
 	endurance = 0
 	genome = 6
-	vending = 0
+	vending = 1
 	commuts = list(/datum/plant_gene_strain/immunity_toxin,/datum/plant_gene_strain/metabolism_slow)
+	assoc_reagents = list("nitrogen")
 
 /datum/plant/corn
 	name = "Corn"
@@ -175,5 +176,5 @@
 	genome = 20
 	force_seed_on_harvest = 1
 	vending = 1
-	mutations = list(/datum/plantmutation/tree/money)
+	mutations = list(/datum/plantmutation/tree/money,/datum/plantmutation/tree/sassafras)
 	commuts = list(/datum/plant_gene_strain/metabolism_fast,/datum/plant_gene_strain/metabolism_slow,/datum/plant_gene_strain/resistance_drought)

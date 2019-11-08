@@ -1991,6 +1991,15 @@ datum
 					P.HYPdamageplant("poison",2)
 					P.growth -= 3
 
+		safrole
+			name = "safrole"
+			id = "safrole"
+			description = "A common food additive with a distinctive 'candy shop' aroma."
+			fluid_r = 100
+			fluid_g = 100
+			fluid_b = 0
+			transparency = 200
+
 		ash
 			name = "ash"
 			id = "ash"

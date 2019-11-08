@@ -1133,6 +1133,31 @@ datum
 			mix_phrase = "Slightly dizzying fumes drift from the solution."
 			mix_sound = 'sound/misc/drinkfizz.ogg'
 
+		mdma //MDMA and space drugs are already super similar. It's not very close to real life recipes but fuck it, I want this to be a botany friendly space drugs method.
+			name = "MDMA"
+			id = "mdma"
+			result = "space_drugs"
+			required_reagents = list("safrole" = 1, "salbutamol" = 1, "nitrogen"=1, "water" = 1)
+			mix_phrase = "A white particulate settles from the solution."
+			mix_sound = 'sound/misc/drinkfizz.ogg'
+			result_amount = 1
+			on_reaction(var/datum/reagents/holder, created_volume)
+				//CHECK FOR RECURSIVE REACTIONS AND RESOLVE
+				var/safrole = holder.get_reagent_amount("safrole")
+				var/nitrogen = holder.get_reagent_amount("nitrogen")
+				var/temp = 0
+				while(safrole && nitrogen)
+					temp = min(safrole,nitrogen,created_volume)
+					holder.add_reagent("space_drugs",temp)
+					safrole -= temp
+					holder.remove_reagent("safrole", temp)
+					nitrogen -= temp
+					holder.remove_reagent("nitrogen", temp)
+
+				holder.add_reagent("salbutamol",created_volume)
+				holder.add_reagent("water",created_volume)
+				return
+
 		lube
 			name = "Space Lube"
 			id = "lube"

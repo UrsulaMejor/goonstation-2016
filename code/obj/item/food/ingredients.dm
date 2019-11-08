@@ -145,13 +145,6 @@
 	amount = 1
 	food_color = "#FFFFAA"
 
-/obj/item/reagent_containers/food/snacks/ingredient/bean
-	name = "bean pod"
-	desc = "This bean pod contains an inordinately large amount of beans due to genetic engineering. How convenient."
-	icon_state = "beanpod"
-	amount = 1
-	food_color = "#CCFFCC"
-
 /obj/item/reagent_containers/food/snacks/ingredient/sugar
 	name = "sugar"
 	desc = "How sweet."

@@ -352,3 +352,10 @@
 	iconmod = "Cash"
 	crop = /obj/item/spacecash
 	chance = 20
+
+/datum/plantmutation/tree/sassafras
+	name = "Sassafras Tree"
+	iconmod = "Sassafras"
+	assoc_reagents = list("safrole")
+	crop = /obj/item/plant/herb/sassafras
+	chance = 20

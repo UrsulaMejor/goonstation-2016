@@ -129,6 +129,18 @@
 	food_color = "#4A7402"
 	plant_reagent = "grease"
 
+/obj/item/reagent_containers/food/snacks/plant/bean
+	name = "bean pod"
+	desc = "This bean pod contains an inordinately large amount of beans due to genetic engineering. How convenient."
+	planttype = /datum/plant/beans
+	icon_state = "beanpod"
+	amount = 1
+	heal_amt = 1
+	throwforce = 0
+	force = 0
+	plant_reagent = "nitrogen"
+	food_color = "#CCFFCC"
+
 /obj/item/reagent_containers/food/snacks/plant/soylent
 	name = "soylent chartreuse"
 	desc = "Contains high-energy plankton!"

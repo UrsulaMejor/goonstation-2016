@@ -1425,6 +1425,28 @@ datum
 				..(M)
 				return
 
+		fooddrink/sarsaparilla // traditionally non-caffeinated
+			name = "sarsaparilla"
+			id = "sarsaparilla"
+			description = "A refreshing beverage that only like, four people on station like."
+			reagent_state = LIQUID
+			fluid_r = 86
+			fluid_g = 43
+			fluid_b = 43
+			transparency = 190
+			taste = "sugary"
+			thirst_value = 0.75
+			hygiene_value = -0.5
+
+			on_mob_life(var/mob/M)
+				if (ishuman(M))
+					var/mob/living/carbon/human/H = M
+					if (H.sims)
+						H.sims.affectMotive("bladder", -1.25)
+				M.bodytemperature = max(M.base_body_temp, M.bodytemperature-5)
+				..(M)
+				return
+
 		fooddrink/cheese
 			name = "cheese"
 			id = "cheese"
