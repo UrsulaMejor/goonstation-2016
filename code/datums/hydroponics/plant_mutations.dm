@@ -69,6 +69,12 @@
 	crop = /obj/item/reagent_containers/food/snacks/plant/grape/green
 	iconmod = "Ggrape"
 
+/datum/plantmutation/grapes/fruit
+	name = "Grapefruit"
+	crop = /obj/item/reagent_containers/food/snacks/plant/grapefruit
+	iconmod = "Grapefruit"
+	assoc_reagents = list("juice_grapefruit")
+
 // Orange Mutations
 
 /datum/plantmutation/orange/blood

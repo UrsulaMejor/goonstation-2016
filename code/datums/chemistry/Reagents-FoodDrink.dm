@@ -2248,6 +2248,37 @@ datum
 						boutput(M, "<span style=\"color:red\">Your eyes sting!</span>")
 						M.change_eye_blurry(rand(5, 20))
 
+		fooddrink/juice_grapefruit
+			name = "grapefruit juice"
+			id = "juice_grapefruit"
+			fluid_r = 238
+			fluid_g = 120
+			fluid_b = 92
+			description = "A citric beverage extracted from grapefruit."
+			reagent_state = LIQUID
+			thirst_value = 1.5
+
+			on_mob_life(var/mob/M)
+				if(!M) M = holder.my_atom
+				for(var/reagent_id in M.reagents.reagent_list)
+					if(reagent_id != id) // you know, just in case juice_grapefruit gets added to the whitelist :rolling_eyes:
+						if(reagent_id in chem_whitelist) // I can't be fucked to limit it to just the ones that make sense. This is a fucking fruit from a space grape, deal with it.
+							M.reagents.remove_reagent(reagent_id, 0.5) //grapefruit juice is known to reduce the effectiveness of a wide variety of medications
+				..(M)
+				return
+
+			reaction_mob(var/mob/M, var/method=TOUCH, var/volume)
+				if(method == TOUCH)
+					if(ishuman(M))
+						var/mob/living/carbon/human/H = M
+						if(H.wear_mask) return
+						if(H.head) return
+					if(prob(75))
+						M.emote("gasp")
+						boutput(M, "<span style=\"color:red\">Your eyes sting!</span>")
+						M.change_eye_blurry(rand(5, 20))
+
+
 		fooddrink/juice_tomato
 			name = "tomato juice"
 			id = "juice_tomato"

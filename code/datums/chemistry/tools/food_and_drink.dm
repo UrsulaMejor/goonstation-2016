@@ -638,6 +638,15 @@
 			src.update_icon()
 			qdel(W)
 
+		else if (istype(W, /obj/item/reagent_containers/food/snacks/plant/grapefruit/wedge))
+			if (src.wedge)
+				boutput(user, "<span style=\"color:red\">You can't add another wedge to [src], that would just look silly!!</span>")
+				return
+			boutput(user, "<span style=\"color:blue\">You add [W] to the lip of [src].</span>")
+			src.wedge = "grapefruit"
+			src.update_icon()
+			qdel(W)
+
 		else if (istype(W, /obj/item/reagent_containers/food/snacks/plant/orange) && !istype(W, /obj/item/reagent_containers/food/snacks/plant/orange/wedge))
 			if (src.reagents.total_volume >= src.reagents.maximum_volume)
 				boutput(user, "<span style=\"color:red\">[src] is full.</span>")
@@ -655,6 +664,14 @@
 			qdel(W)
 
 		else if (istype(W, /obj/item/reagent_containers/food/snacks/plant/lemon) && !istype(W, /obj/item/reagent_containers/food/snacks/plant/lemon/wedge))
+			if (src.reagents.total_volume >= src.reagents.maximum_volume)
+				boutput(user, "<span style=\"color:red\">[src] is full.</span>")
+				return
+			boutput(user, "<span style=\"color:blue\">You squeeze [W] into [src].</span>")
+			W.reagents.trans_to(src, W.reagents.total_volume)
+			qdel(W)
+
+		else if (istype(W, /obj/item/reagent_containers/food/snacks/plant/grapefruit) && !istype(W, /obj/item/reagent_containers/food/snacks/plant/grapefruit/wedge))
 			if (src.reagents.total_volume >= src.reagents.maximum_volume)
 				boutput(user, "<span style=\"color:red\">[src] is full.</span>")
 				return
@@ -776,6 +793,10 @@
 				eat_message = "orange wedge off"
 				H.reagents.add_reagent("juice_orange", 5)
 				src.wedge = null
+			if ("eat the grapefruit wedge")
+				eat_message = "grapefruit wedge off"
+				H.reagents.add_reagent("juice_grapefruit", 5)
+				src.wedge = null
 
 		H.visible_message("<B>[H]</B> plucks the [eat_message] of [src] and eats it.")
 		playsound(H.loc, "sound/items/eatfood.ogg", rand(10,50), 1)
@@ -816,6 +837,8 @@
 				new /obj/item/reagent_containers/food/snacks/plant/lime/wedge(T)
 			if (src.wedge == "orange")
 				new /obj/item/reagent_containers/food/snacks/plant/orange/wedge(T)
+			if (src.wedge == "grapefruit")
+				new /obj/item/reagent_containers/food/snacks/plant/grapefruit/wedge(T)
 		qdel(src)
 
 	throw_impact(var/turf/T)

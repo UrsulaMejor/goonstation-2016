@@ -597,6 +597,47 @@
 		..()
 		reagents.add_reagent("juice_lemon",5)
 
+/obj/item/reagent_containers/food/snacks/plant/grapefruit/
+	name = "grapefruit"
+	desc = "A delicious grape fruit."
+	icon_state = "grapefruit"
+	planttype = /datum/plant/grape
+	amount = 3
+	heal_amt = 1
+	food_color = "#F69C42"
+	plant_reagent = "juice_grapefruit"
+
+	attackby(obj/item/W as obj, mob/user as mob)
+		if (istype(W, /obj/item/axe) || istype(W, /obj/item/circular_saw) || istype(W, /obj/item/kitchen/utensil/knife) || istype(W, /obj/item/scalpel) || istype(W, /obj/item/sword) || istype(W,/obj/item/saw) || istype(W,/obj/item/knife_butcher))
+			if (istype (src, /obj/item/reagent_containers/food/snacks/plant/grapefruit/wedge))
+				boutput(user, "<span style=\"color:red\">You can't cut wedges into wedges! What kind of insanity is that!?</span>")
+				return
+			var/turf/T = get_turf(src)
+			user.visible_message("[user] cuts [src] into slices.", "You cut [src] into slices.")
+			var/makeslices = 6
+			while (makeslices > 0)
+				var/obj/item/reagent_containers/food/snacks/plant/grapefruit/wedge/P = new(T)
+				var/datum/plantgenes/DNA = src.plantgenes
+				var/datum/plantgenes/PDNA = P.plantgenes
+				HYPpassplantgenes(DNA,PDNA)
+				makeslices -= 1
+			qdel (src)
+		..()
+
+/obj/item/reagent_containers/food/snacks/plant/grapefruit/wedge
+	name = "grapefruit wedge"
+	icon = 'icons/obj/drink.dmi'
+	icon_state = "old-grapefruit"
+	throwforce = 0
+	w_class = 1.0
+	amount = 1
+	initial_volume = 6
+
+	New()
+		..()
+		reagents.add_reagent("juice_grapefruit",5)
+
+
 /obj/item/reagent_containers/food/snacks/plant/slurryfruit/
 	name = "slurrypod"
 	desc = "An extremely poisonous, bitter fruit.  The slurrypod fruit is regarded as a delicacy in some outer colony worlds."
