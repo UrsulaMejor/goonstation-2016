@@ -2028,7 +2028,6 @@ obj/vehicle/forklift/attackby(var/obj/item/I, var/mob/user)
 	if(rider && rider_visible && I.force)
 		I.attack(rider, user)
 		I.visible_message("[user] swings at [rider] with [I]!</B></span>")
-		return
 	return
 
 /obj/vehicle/forklift/proc/break_forklift()
@@ -2080,7 +2079,7 @@ obj/vehicle/forklift/attackby(var/obj/item/I, var/mob/user)
 		src.underlays = null
 
 /obj/vehicle/forklift/bullet_act(flag, A as obj)
-	if(rider)
+	if(rider && rider_visible)
 		rider.bullet_act(flag, A)
 	else
 		..()
