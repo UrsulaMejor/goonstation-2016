@@ -352,3 +352,10 @@
 	iconmod = "Cash"
 	crop = /obj/item/spacecash
 	chance = 20
+
+/datum/plantmutation/tree/paper
+	name = "Paper Tree"
+	iconmod = "Paper"
+	crop = /obj/item/paper
+	chance = 20
+

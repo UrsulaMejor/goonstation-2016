@@ -175,5 +175,5 @@
 	genome = 20
 	force_seed_on_harvest = 1
 	vending = 1
-	mutations = list(/datum/plantmutation/tree/money)
+	mutations = list(/datum/plantmutation/tree/money,/datum/plantmutation/tree/paper)
 	commuts = list(/datum/plant_gene_strain/metabolism_fast,/datum/plant_gene_strain/metabolism_slow,/datum/plant_gene_strain/resistance_drought)
