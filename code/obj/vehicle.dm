@@ -1951,7 +1951,7 @@ obj/vehicle/clowncar/proc/log_me(var/mob/rider, var/mob/pax, var/action = "", va
 		return
 	switch(M.a_intent)
 		if("harm", "disarm")
-			if(prob(40))
+			if(prob(40) || rider.stat)
 				playsound(src.loc, "sound/weapons/thudswoosh.ogg", 50, 1, -1)
 				src.visible_message("<span style=\"color:red\"><B>[M] has shoved [rider] off of [src]!</B></span>")
 				rider.weakened = 2
@@ -2024,6 +2024,11 @@ obj/vehicle/forklift/attackby(var/obj/item/I, var/mob/user)
 			broken = 0
 			if (helditems_maximum < 4)
 				helditems_maximum = 4
+
+	if(rider && rider_visible && I.force)
+		I.attack(rider, user)
+		I.visible_message("[user] swings at [rider] with [I]!</B></span>")
+		return
 	return
 
 /obj/vehicle/forklift/proc/break_forklift()
@@ -2073,3 +2078,10 @@ obj/vehicle/forklift/attackby(var/obj/item/I, var/mob/user)
 	else
 		src.icon_state = "forklift"
 		src.underlays = null
+
+/obj/vehicle/forklift/bullet_act(flag, A as obj)
+	if(rider)
+		rider.bullet_act(flag, A)
+	else
+		..()
+	return
