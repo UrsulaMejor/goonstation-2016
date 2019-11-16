@@ -198,3 +198,45 @@
 	brew_result = "catdrugs"
 	module_research = list("vice" = 3)
 	module_research_type = /obj/item/plant/herb/cannabis
+
+// FLOWERS //
+
+/obj/item/plant/flower
+	// PLACEHOLDER FOR FLOURISH'S PLANT PLOT STUFF
+
+/obj/item/plant/flower/rose
+	name = "rose"
+	desc = "By any other name, would smell just as sweet. This one likes to be called "
+	icon_state = "rose"
+	var/thorned = 1
+	var/list/names = list("Emma", "Olivia", "Ava", "Isabella", "Sophia", "Charlotte", "Mia", "Amelia",
+	"Harper", "Evelyn", "Abigail", "Emily", "Elizabeth", "Mila", "Dakota", "Avery",
+	"Sofia", "Camila", "Aria", "Scarlett", "Liam", "Noah", "William", "James",
+	"Oliver", "Benjamin", "Elijah", "Lucas", "Mason", "Logan", "Alexander", "Ethan",
+	"Jacob", "Michael", "Daniel", "Henry", "Jackson", "Sebastian", "Aiden", "Matthew")
+
+	New()
+		..()
+		desc = desc + pick(names) + "."
+
+	attack_hand(mob/user as mob)
+		var/mob/living/carbon/human/H = user
+		if(src.thorned)
+			if(istype(H))
+				if(H.gloves)
+					..()
+					return
+			boutput(user, "<span style=\"color:red\">You prick yourself on [src]'s thorns trying to pick it up!</span>")
+			random_brute_damage(user, 3)
+			take_bleeding_damage(user,null,3,DAMAGE_STAB)
+		else
+			..()
+
+	attackby(obj/item/W as obj, mob/user as mob)
+		if (istype(W, /obj/item/wirecutters/) && src.thorned)
+			boutput(user, "<span style=\"color:blue\">You snip off [src]'s thorns.</span>")
+			src.thorned = 0
+			src.desc += " Its thorns have been snipped off."
+			return
+		..()
+		return

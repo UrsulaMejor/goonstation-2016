@@ -414,6 +414,33 @@
 	food_color = "#FF2244"
 	plant_reagent = "juice_strawberry"
 
+/obj/item/reagent_containers/food/snacks/plant/pear/
+	name = "pear"
+	desc = "Whether or not you like the taste, its freshness is appearant."
+	icon_state = "pear"
+	planttype = /datum/plant/pear
+	amount = 1
+	heal_amt = 2
+	brewable = 1
+	brew_result = "cider" // pear cider is delicious, fuck you.
+	food_color = "#3FB929"
+
+/obj/item/reagent_containers/food/snacks/plant/peach/
+	name = "peach"
+	desc = "Feelin' peachy now, but after you eat it it's the pits."
+	icon_state = "peach"
+	planttype = /datum/plant/peach
+	amount = 1
+	heal_amt = 2
+	food_color = "#DEBA5F"
+
+	New()
+		..()
+		if(prob(10)) // For Sartorius
+			src.desc = pick("These peaches do not come from a can, they were not put there by a man.",
+			"Millions of peaches, peaches for me. Millions of peaches, peaches for free.",
+			"If I had my little way, I'd each peaches every day.", "Nature's candy in my hand, or a can, or a pie")
+
 /obj/item/reagent_containers/food/snacks/plant/apple/
 	name = "apple"
 	desc = "Implied by folklore to repel medical staff."

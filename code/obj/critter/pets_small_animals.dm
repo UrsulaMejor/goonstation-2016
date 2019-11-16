@@ -375,6 +375,17 @@ var/list/cat_names = list("Gary", "Mittens", "Mr. Jingles", "Rex", "Jasmine", "L
 			spawn(10)
 				src.attacking = 0
 
+/obj/critter/cat/synth
+	icon_state = "catsynth"
+	cattype = "synth"
+	randomize_cat = 0
+	generic = 0
+	desc = "Although this cat is vegan, it's still a carnivore."
+
+	New()
+		name = pick(cat_names)
+		..()
+
 /obj/critter/dog/george
 	name = "George"
 	desc = "Good dog."

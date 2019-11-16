@@ -999,7 +999,7 @@
 		if(href_list["category"])
 			if (src.category) src.category = null
 			else
-				var/filter = input(usr, "Filter by which category?", "[src.name]", 0) in list("Fruit","Vegetable","Herb","Miscellaneous")
+				var/filter = input(usr, "Filter by which category?", "[src.name]", 0) in list("Fruit","Vegetable","Herb","Flower","Miscellaneous")
 				if(!filter) return
 				src.category = filter
 			src.updateUsrDialog()

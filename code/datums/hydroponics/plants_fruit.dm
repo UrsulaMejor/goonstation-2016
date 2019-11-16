@@ -232,3 +232,35 @@
 	genome = 18
 	nectarlevel = 10
 	assoc_reagents = list("juice_strawberry")
+
+/datum/plant/pear
+	name = "Pear"
+	category = "Fruit"
+	seedcolor = "#3FB929"
+	crop = /obj/item/reagent_containers/food/snacks/plant/pear
+	starthealth = 40
+	growtime = 200
+	harvtime = 260
+	cropsize = 3
+	harvests = 10
+	endurance = 5
+	genome = 19
+	nectarlevel = 10
+	commuts = list(/datum/plant_gene_strain/quality)
+
+/datum/plant/peach
+	name = "Peach"
+	category = "Fruit"
+	seedcolor = "#DEBA5F"
+	crop = /obj/item/reagent_containers/food/snacks/plant/peach
+	starthealth = 40
+	growtime = 200
+	harvtime = 260
+	cropsize = 3
+	harvests = 10
+	endurance = 5
+	genome = 19
+	nectarlevel = 10
+	assoc_reagents = list("juice_peach")
+	commuts = list(/datum/plant_gene_strain/quality)
+

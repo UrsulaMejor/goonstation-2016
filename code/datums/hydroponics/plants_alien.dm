@@ -97,6 +97,47 @@
 	endurance = 20
 	assoc_reagents = list("omnizine")
 
+/datum/plant/artifact/cat
+	name = "Synthetic Cat"
+	special_icon = "cat"
+	crop = /obj/critter/cat/synth
+	unique_seed = /obj/item/seed/alien/cat
+	starthealth = 90 // 9 lives
+	growtime = 100
+	harvtime = 150
+	endurance = 30
+	special_proc = 1
+	attacked_proc = 1
+	harvestable = 0
+
+	HYPspecial_proc(var/obj/machinery/plantpot/POT)
+		..()
+		if (.) return
+		var/datum/plant/P = POT.current
+		var/datum/plantgenes/DNA = POT.plantgenes
+
+		if (POT.growth > (P.growtime + DNA.growtime) && prob(16))
+			playsound(get_turf(POT),'sound/effects/cat.ogg',30,1,-1)
+			POT.visible_message("<span style=\"color:red\"><b>[POT.name]</b> meows!</span>")
+
+		if (POT.growth > (P.harvtime + DNA.harvtime + 10))
+			var/obj/critter/cat/synth/C = new(POT.loc)
+			C.health = POT.health
+			POT.visible_message("<span style=\"color:blue\">The synthcat climbs out of the tray!</span>")
+			POT.HYPdestroyplant()
+			return
+
+	HYPattacked_proc(var/obj/machinery/plantpot/POT,var/mob/user)
+		..()
+		if (.) return
+		var/datum/plant/P = POT.current
+		var/datum/plantgenes/DNA = POT.plantgenes
+
+		if (POT.growth < (P.growtime + DNA.growtime)) return 0
+
+		playsound(get_turf(POT),'sound/effects/cat_hiss.ogg',30,1,-1)
+		POT.visible_message("<span style=\"color:red\"><b>[POT.name]</b> hisses!</span>")
+
 // Weird Shit
 
 /datum/plant/maneater

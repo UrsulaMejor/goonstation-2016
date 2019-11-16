@@ -127,12 +127,13 @@
 	New()
 		if (src.type == /obj/item/seed/alien)
 			// let's make the base seed randomise itself for fun and also for functionality
-			switch(rand(1,5))
+			switch(rand(1,6))
 				if (1) src.planttype = HY_get_species_from_path(/datum/plant/artifact/pukeplant)
 				if (2) src.planttype = HY_get_species_from_path(/datum/plant/artifact/dripper)
 				if (3) src.planttype = HY_get_species_from_path(/datum/plant/artifact/rocks)
 				if (4) src.planttype = HY_get_species_from_path(/datum/plant/artifact/litelotus)
 				if (5) src.planttype = HY_get_species_from_path(/datum/plant/artifact/peeker)
+				if (6) src.planttype = HY_get_species_from_path(/datum/plant/artifact/cat)
 		..()
 
 /obj/item/seed/alien/pukeplant
@@ -159,3 +160,8 @@
 	New()
 		..()
 		src.planttype = HY_get_species_from_path(/datum/plant/artifact/peeker)
+
+/obj/item/seed/alien/cat
+	New()
+		..()
+		src.planttype = HY_get_species_from_path(/datum/plant/artifact/cat)
