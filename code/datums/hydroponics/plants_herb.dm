@@ -119,3 +119,20 @@
 	vending = 2
 	genome = 1
 	assoc_reagents = list("catonium")
+
+/datum/plant/hcordata
+	name = "Houttuynia Cordata"
+	category = "Herb"
+	seedcolor = "#00CA70"
+	crop = /obj/item/plant/herb/hcordata
+	mutations = list(/datum/plantmutation/hcordata/fish)
+	starthealth = 10
+	growtime = 30
+	harvtime = 80
+	cropsize = 6
+	harvests = 1
+	endurance = 0
+	isgrass = 1
+	vending = 2
+	genome = 1
+	assoc_reagents = list("mercury")

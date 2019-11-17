@@ -117,6 +117,17 @@
 			new /obj/item/reagent_containers/food/snacks/popcorn(get_turf(src))
 			qdel(src)
 
+/obj/item/reagent_containers/food/snacks/plant/corn/clear
+	name = "clear corn cob"
+	desc = "Pure grain ethanol in a vague corn shape."
+	icon_state = "clearcorn"
+	planttype = /datum/plant/corn
+	amount = 3
+	heal_amt = 3
+	food_color = "#FFFFFF"
+	plant_reagent = "ethanol"
+	brew_result = "ethanol"
+
 /obj/item/reagent_containers/food/snacks/plant/soy
 	name = "soybean pod"
 	desc = "These soybeans are as close as two beans in a pod. Probably because they are literally beans in a pod."
@@ -230,6 +241,16 @@
 	heal_amt = 2
 	food_color = "#AAFFAA"
 	brew_result = "white_wine"
+
+/obj/item/reagent_containers/food/snacks/plant/grape/plasma
+	name = "grapes"
+	desc = "Definitely not the green ones."
+	icon_state = "plasgrape"
+	amount = 3
+	heal_amt = 0
+	food_color = "#FF00FF"
+	brew_result = "plasma"
+	plant_reagent = "plasma"
 
 /obj/item/reagent_containers/food/snacks/plant/melon/
 	name = "melon"

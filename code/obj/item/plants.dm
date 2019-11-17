@@ -198,3 +198,8 @@
 	brew_result = "catdrugs"
 	module_research = list("vice" = 3)
 	module_research_type = /obj/item/plant/herb/cannabis
+
+/obj/item/plant/herb/hcordata
+	name = "houttuynia cordata"
+	desc = "Also known as fish mint or heart leaf, used in cuisine for its distinct fishy flavor."
+	icon_state = "hcordata"

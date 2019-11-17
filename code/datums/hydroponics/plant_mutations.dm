@@ -63,11 +63,22 @@
 	crop = /obj/critter/killertomato
 	iconmod = "kiltom"
 
+// Corn Mutations
+/datum/plantmutation/corn/clear
+	crop = /obj/item/reagent_containers/food/snacks/plant/corn/clear
+	iconmod = "Clearcorn"
+	assoc_reagents = list("ethanol")
+
 // Grape Mutations
 
 /datum/plantmutation/grapes/green
 	crop = /obj/item/reagent_containers/food/snacks/plant/grape/green
 	iconmod = "Ggrape"
+
+/datum/plantmutation/grapes/plasma
+	crop = /obj/item/reagent_containers/food/snacks/plant/grape/plasma
+	iconmod = "Plasgrape"
+	assoc_reagents = list("plasma")
 
 // Orange Mutations
 
@@ -218,6 +229,45 @@
 	assoc_reagents = list("oculine","mannitol","mutadone")
 	chance = 5
 
+// Houttuynia Cordata Mutations
+
+/datum/plantmutation/hcordata/fish
+	name = "Wholetuna Cordata"
+	iconmod = "Wcordata"
+	special_proc_override = 1
+
+	HYPspecial_proc_M(var/obj/machinery/plantpot/POT)
+		..()
+		if (.) return
+		var/datum/plant/P = POT.current
+		var/datum/plantgenes/DNA = POT.plantgenes
+
+		if (POT.growth > (P.harvtime + DNA.harvtime) && prob(10))
+			var/list/nerds = list()
+			for (var/mob/living/L in mobs)
+				if (get_dist(L.loc,POT.loc) <= 1)
+					nerds += L
+				else
+					continue
+			if (nerds.len >= 1)
+				POT.visible_message("<span style=\"color:red\"><b>[POT.name]</b> slaps [pick(nerds)] with a fish!</span>")
+				playsound(get_turf(POT), pick('sound/weapons/slimyhit1.ogg', 'sound/weapons/slimyhit2.ogg'), 50, 1, -1)
+
+	HYPharvested_proc_M(var/obj/machinery/plantpot/POT, var/mob/user)
+		. = ..()
+		if (.)
+			return .
+
+		var/datum/plant/P = POT.current
+		var/datum/plantgenes/DNA = POT.plantgenes
+
+		if((P.cropsize + DNA.cropsize) > 0)
+			for(var/i = 0, i < (P.cropsize + DNA.cropsize), i++)
+				var/fish = pick(/obj/item/fish/salmon,/obj/item/fish/carp,/obj/item/fish/bass)
+				new fish(get_turf(user))
+
+			return 0
+
 // Cannabis Mutations
 
 /datum/plantmutation/cannabis/rainbow
@@ -352,3 +402,33 @@
 	iconmod = "Cash"
 	crop = /obj/item/spacecash
 	chance = 20
+
+/datum/plantmutation/tree/dog
+	name = "Dogwood Tree"
+	iconmod = "Dogwood"
+	special_proc_override = 1
+	//attacked_proc_override = 1
+
+	HYPspecial_proc_M(var/obj/machinery/plantpot/POT)
+		..()
+		if (.) return
+		var/datum/plant/P = POT.current
+		var/datum/plantgenes/DNA = POT.plantgenes
+
+		if (POT.growth > (P.growtime + DNA.growtime) && prob(1))
+			POT.visible_message("<span class='combat'><b>[POT.name]</b> [pick("howls","bays","whines","barks","croons")]!</span>")
+			playsound(get_turf(POT), pick("sound/misc/howl1.ogg","sound/misc/howl2.ogg","sound/misc/howl3.ogg","sound/misc/howl4.ogg","sound/misc/howl5.ogg","sound/misc/howl6.ogg"), 30, 1,-1)
+
+	/*
+	HYPattacked_proc_M(var/obj/machinery/plantpot/POT,var/mob/user)
+		..()
+		if (.) return
+		var/datum/plant/P = POT.current
+		var/datum/plantgenes/DNA = POT.plantgenes
+
+		if (POT.growth < (P.growtime + DNA.growtime)) return 0
+		playsound(get_turf(POT), pick("sound/misc/howl1.ogg","sound/misc/howl2.ogg","sound/misc/howl3.ogg","sound/misc/howl4.ogg","sound/misc/howl5.ogg","sound/misc/howl6.ogg"), 30, 1,-1)
+		boutput(user, "<span style=\"color:red\">[POT.name] angrily bites you!</span>")
+		random_brute_damage(user, 3)
+		return 1
+	*/

@@ -39,7 +39,7 @@
 	endurance = 0
 	genome = 20
 	nectarlevel = 10
-	mutations = list(/datum/plantmutation/grapes/green)
+	mutations = list(/datum/plantmutation/grapes/green,/datum/plantmutation/grapes/plasma)
 	commuts = list(/datum/plant_gene_strain/metabolism_fast,/datum/plant_gene_strain/seedless)
 
 /datum/plant/orange

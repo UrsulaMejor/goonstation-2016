@@ -64,8 +64,10 @@
 	harvests = 3
 	endurance = 2
 	genome = 10
+	mutations = list(/datum/plantmutation/corn/clear)
 	commuts = list(/datum/plant_gene_strain/photosynthesis,/datum/plant_gene_strain/splicing/bad)
 	assoc_reagents = list("cornstarch")
+
 
 /datum/plant/synthmeat
 	name = "Synthmeat"
