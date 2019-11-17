@@ -4,9 +4,7 @@ stuntwaffle - Host
 pantaloons - Host
 darsant - Host
 nannek - Host
-ursulamajor - Host
 
-ursulmajor - Coder
 exadv1 - Coder
 0staf - Coder
 justicefries - Coder

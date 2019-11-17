@@ -1,12 +1,9 @@
 // BEGIN_INTERNALS
 /*
-MAP_ZOOM: 1.000
-LAST_COMPILE_TIME: 1574027850
-DIR: code code\chui\example code\datums code\datums\buildmodes code\datums\buildmodes\adventure code\datums\buildmodes\adventure\elements code\datums\chemistry code\datums\chemistry\tools code\datums\controllers code\datums\critter_mobs\health code\datums\diseases code\datums\gamemodes code\datums\genetics code\datums\hydroponics code\obj code\obj\artifacts code\obj\artifacts\artifact_machines code\obj\critter code\obj\item code\obj\item\food icons icons\obj icons\obj\foodNdrink icons\obj\hydroponics maps maps\config sound sound\misc sound\vox 
+LAST_COMPILE_TIME: 1457219709
+DIR: code code\chui\example code\datums\buildmodes code\datums\buildmodes\adventure code\datums\buildmodes\adventure\elements code\datums\chemistry code\datums\chemistry\tools code\datums\critter_mobs\health code\datums\gamemodes code\datums\genetics 
 AUTO_FILE_DIR: OFF
 MAP_ICON_TYPE: 0
-LAST_COMPILE_VERSION: 512.1488
-WINDOW: code\datums\hydroponics\plant_mutations.dm;code\datums\hydroponics\plants_herb.dm;code\obj\item\plants.dm;icons\obj\hydroponics\hydroponics.dmi;code\datums\hydroponics\plants.dm;code\obj\item\kitchen.dm;code\datums\hydroponics\plants_alien.dm
-FILE: code\datums\hydroponics\plant_mutations.dm
+LAST_COMPILE_VERSION: 510.1327
 */
 // END_INTERNALS
