@@ -282,3 +282,10 @@ MISC KITCHENWARE
 			return
 	..()
 	return
+
+/obj/item/fish/random // used by the Wholetuna Cordata plant
+	New()
+		spawn(0)
+			var/fish = pick(/obj/item/fish/salmon,/obj/item/fish/carp,/obj/item/fish/bass)
+			new fish(get_turf(src))
+			qdel(src)

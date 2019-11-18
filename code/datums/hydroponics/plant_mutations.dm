@@ -247,7 +247,7 @@
 /datum/plantmutation/hcordata/fish
 	name = "Wholetuna Cordata"
 	iconmod = "Wcordata"
-	crop = /obj/item/plant/herb/hcordata
+	crop = /obj/item/fish/random
 	special_proc_override = 1
 
 	HYPspecial_proc_M(var/obj/machinery/plantpot/POT)
@@ -268,21 +268,6 @@
 			if (nerds.len >= 1)
 				POT.visible_message("<span style=\"color:red\"><b>[POT.name]</b> slaps [pick(nerds)] with a fish!</span>")
 				playsound(get_turf(POT), pick('sound/weapons/slimyhit1.ogg', 'sound/weapons/slimyhit2.ogg'), 50, 1, -1)
-
-	HYPharvested_proc_M(var/obj/machinery/plantpot/POT, var/mob/user)
-		. = ..()
-		if (.)
-			return .
-
-		var/datum/plant/P = POT.current
-		var/datum/plantgenes/DNA = POT.plantgenes
-
-		if((P.cropsize + DNA.cropsize) > 0)
-			for(var/i = 0, i < (P.cropsize + DNA.cropsize), i++)
-				var/fish = pick(/obj/item/fish/salmon,/obj/item/fish/carp,/obj/item/fish/bass)
-				new fish(get_turf(user))
-
-			return 0
 
 // Cannabis Mutations
 
