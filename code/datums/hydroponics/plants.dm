@@ -53,6 +53,7 @@
 	// proc 200: HYPattacked
 	// proc 300: HYPharvested
 	// proc 400: HYPspecial_M
+	// proc 500: HYPattacked_M
 	// error  1: called with null pot
 	// error  2: called when plant is dead or no plant exists
 	// error  3: called with a plant that is not ready to harvest

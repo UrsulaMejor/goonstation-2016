@@ -175,7 +175,9 @@
 	harvests = 10
 	endurance = 5
 	genome = 20
+	special_proc = 1 // for dogwood tree
 	force_seed_on_harvest = 1
 	vending = 1
-	mutations = list(/datum/plantmutation/tree/money)
+	attacked_proc = 1 // for dogwood tree
+	mutations = list(/datum/plantmutation/tree/money, /datum/plantmutation/tree/dog)
 	commuts = list(/datum/plant_gene_strain/metabolism_fast,/datum/plant_gene_strain/metabolism_slow,/datum/plant_gene_strain/resistance_drought)

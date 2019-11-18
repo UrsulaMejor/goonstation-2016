@@ -357,9 +357,24 @@
 			if (src.current)
 				var/datum/plant/growing = src.current
 				if (growing.attacked_proc)
-					if (growing.HYPattacked_proc(src,user,W)) return
 					// It will fight back if possible, and halts the attack if it returns
 					// anything other than zero from the attack proc.
+					if (plantgenes.mutation)
+						// If we've got a mutation, we want to check if the mutation has its own special
+						// proc that overrides the regular one.
+						var/datum/plantmutation/MUT = plantgenes.mutation
+						switch (MUT.attacked_proc_override)
+							if(0)
+								// There's no attacked proc for this mutation, so just use the regular one.
+								if (growing.HYPattacked_proc(src,user,W)) return
+							if(1)
+								// The mutation overrides the base proc to use its own.
+								if (MUT.HYPattacked_proc_M(src,user,W)) return
+							else
+								// Any other value means we use BOTH procs.
+								if (growing.HYPattacked_proc(src,user,W) || MUT.HYPattacked_proc_M(src,user,W)) return
+					else
+						if (growing.HYPattacked_proc(src,user,W)) return
 
 				if (src.dead)
 					src.visible_message("<span style=\"color:red\">[src] goes up in flames!</span>")
@@ -375,7 +390,24 @@
 			if (src.current)
 				var/datum/plant/growing = src.current
 				if (growing.attacked_proc)
-					if (growing.HYPattacked_proc(src,user,W)) return
+					// It will fight back if possible, and halts the attack if it returns
+					// anything other than zero from the attack proc.
+					if (plantgenes.mutation)
+						// If we've got a mutation, we want to check if the mutation has its own special
+						// proc that overrides the regular one.
+						var/datum/plantmutation/MUT = plantgenes.mutation
+						switch (MUT.attacked_proc_override)
+							if(0)
+								// There's no attacked proc for this mutation, so just use the regular one.
+								if (growing.HYPattacked_proc(src,user,W)) return
+							if(1)
+								// The mutation overrides the base proc to use its own.
+								if (MUT.HYPattacked_proc_M(src,user,W)) return
+							else
+								// Any other value means we use BOTH procs.
+								if (growing.HYPattacked_proc(src,user,W) || MUT.HYPattacked_proc_M(src,user,W)) return
+					else
+						if (growing.HYPattacked_proc(src,user,W)) return
 
 				if (src.dead)
 					src.visible_message("<span style=\"color:red\">[src] is is destroyed by [user.name]'s [W]!</span>")
@@ -531,9 +563,24 @@
 		if (src.current)
 			var/datum/plant/growing = src.current
 			if (growing.attacked_proc)
-				if (growing.HYPattacked_proc(src,usr,null)) return
-				// Plants that can fight back can halt your attempt to clear them, and will also
-				// run whatever is in their attacked proc. Same as harvesting really.
+				// It will fight back if possible, and halts the attack if it returns
+				// anything other than zero from the attack proc.
+				if (plantgenes.mutation)
+					// If we've got a mutation, we want to check if the mutation has its own special
+					// proc that overrides the regular one.
+					var/datum/plantmutation/MUT = plantgenes.mutation
+					switch (MUT.attacked_proc_override)
+						if(0)
+							// There's no attacked proc for this mutation, so just use the regular one.
+							if (growing.HYPattacked_proc(src,usr,null)) return
+						if(1)
+							// The mutation overrides the base proc to use its own.
+							if (MUT.HYPattacked_proc_M(src,usr,null)) return
+						else
+							// Any other value means we use BOTH procs.
+							if (growing.HYPattacked_proc(src,usr,null) || MUT.HYPattacked_proc_M(src,usr,null)) return
+				else
+					if (growing.HYPattacked_proc(src,usr,null)) return
 
 			if (growing.growthmode == "weed")
 				if (alert("Clear this tray?",,"Yes","No") == "Yes")

@@ -131,8 +131,11 @@
 	harvtime = 80
 	cropsize = 6
 	harvests = 1
+	force_seed_on_harvest = 1
+	special_proc = 1 // for tuna plant
+	harvested_proc = 1 // for tuna plant
+	isgrass = 0 // for some reason, isgrass forces you not to gave a G3 sprite and stops a bunch of the "fully grown plant" shit from happening :[
 	endurance = 0
-	isgrass = 1
-	vending = 2
+	vending = 1
 	genome = 1
 	assoc_reagents = list("mercury")

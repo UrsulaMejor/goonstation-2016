@@ -4,11 +4,14 @@
 	var/special_dmi = null // same as in base plant thing really
 	var/iconmod = null // name of the sprite files in hydro_mutants.dmi
 	var/harvest_override = 0 // If 1, you can harvest it irregardless of the plant's base harvestability
+
 	var/harvested_proc_override = 0
 	var/special_proc_override = 0
+	var/attacked_proc_override = 0
 	// If 0, just use the base plant's settings
 	// If 1, use the mutation's special_proc instead
 	// If anything else, use both the base and the mutant procs
+
 
 	// Ranges various genes have to be in to get the mutation to appear - lower and upper bound
 	var/list/GTrange = list(null,null) // null means there is no limit so an upper bound of 25
@@ -39,6 +42,15 @@
 		if (lasterr)
 			logTheThing("debug", null, null, "<b>Plant HYP</b> [src] in pot [POT] failed with error [.]")
 			special_proc_override = 0
+		return lasterr
+
+	proc/HYPattacked_proc_M(var/obj/machinery/plantpot/POT,var/mob/user)
+		lasterr = 0
+		if (!POT) lasterr = 501
+		if (POT.dead || !POT.current) lasterr = 502
+		if (lasterr)
+			logTheThing("debug", null, null, "<b>Plant HYP</b> [src] in pot [POT] failed with error [.]")
+			attacked_proc_override = 0
 		return lasterr
 
 // Tomato Mutations
@@ -76,6 +88,7 @@
 	iconmod = "Ggrape"
 
 /datum/plantmutation/grapes/plasma
+	name = "Plasma Grapes"
 	crop = /obj/item/reagent_containers/food/snacks/plant/grape/plasma
 	iconmod = "Plasgrape"
 	assoc_reagents = list("plasma")
@@ -234,6 +247,7 @@
 /datum/plantmutation/hcordata/fish
 	name = "Wholetuna Cordata"
 	iconmod = "Wcordata"
+	crop = /obj/item/plant/herb/hcordata
 	special_proc_override = 1
 
 	HYPspecial_proc_M(var/obj/machinery/plantpot/POT)
@@ -244,6 +258,8 @@
 
 		if (POT.growth > (P.harvtime + DNA.harvtime) && prob(10))
 			var/list/nerds = list()
+			// I know that this seems weird, but consider how many plants clutter botany at any given time. Looping through mobs and checking distance is
+			// less of a pain than looping through potentially hundreds of random seeds and crap in view(1) to see if they're mobs.
 			for (var/mob/living/L in mobs)
 				if (get_dist(L.loc,POT.loc) <= 1)
 					nerds += L
@@ -407,7 +423,7 @@
 	name = "Dogwood Tree"
 	iconmod = "Dogwood"
 	special_proc_override = 1
-	//attacked_proc_override = 1
+	attacked_proc_override = 1
 
 	HYPspecial_proc_M(var/obj/machinery/plantpot/POT)
 		..()
@@ -415,11 +431,10 @@
 		var/datum/plant/P = POT.current
 		var/datum/plantgenes/DNA = POT.plantgenes
 
-		if (POT.growth > (P.growtime + DNA.growtime) && prob(1))
+		if (POT.growth > (P.growtime + DNA.growtime) && prob(5))
 			POT.visible_message("<span class='combat'><b>[POT.name]</b> [pick("howls","bays","whines","barks","croons")]!</span>")
 			playsound(get_turf(POT), pick("sound/misc/howl1.ogg","sound/misc/howl2.ogg","sound/misc/howl3.ogg","sound/misc/howl4.ogg","sound/misc/howl5.ogg","sound/misc/howl6.ogg"), 30, 1,-1)
 
-	/*
 	HYPattacked_proc_M(var/obj/machinery/plantpot/POT,var/mob/user)
 		..()
 		if (.) return
@@ -430,5 +445,4 @@
 		playsound(get_turf(POT), pick("sound/misc/howl1.ogg","sound/misc/howl2.ogg","sound/misc/howl3.ogg","sound/misc/howl4.ogg","sound/misc/howl5.ogg","sound/misc/howl6.ogg"), 30, 1,-1)
 		boutput(user, "<span style=\"color:red\">[POT.name] angrily bites you!</span>")
 		random_brute_damage(user, 3)
-		return 1
-	*/
+		return prob(50) // fights back, but doesn't always succeed
