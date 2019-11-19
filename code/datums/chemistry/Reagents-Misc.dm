@@ -736,14 +736,15 @@ datum
 
 				if (M.bioHolder)
 					if (!M.is_cold_resistant())
-						new /obj/icecube(get_turf(M), M)
-				M.bodytemperature = 0
+						var/obj/icecube/I = new/obj/icecube(get_turf(M), M)
+						I.health = max(volume_passed/5,1)
+				//M.bodytemperature = 0
 				return
 
 			on_mob_life(var/mob/M)
 				if (!M) M = holder.my_atom
 				if (M.bodytemperature > 0)
-					M.bodytemperature = max(M.bodytemperature-50,0)
+					M.bodytemperature = max(M.bodytemperature-10,0)
 				..(M)
 				return
 

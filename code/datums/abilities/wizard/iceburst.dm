@@ -98,6 +98,10 @@
 			src.underlays += iced
 			boutput(iced, "<span style=\"color:red\">You are trapped within [src]!</span>") // since this is used in at least two places to trap people in things other than ice cubes
 		src.health *= (rand(10,20)/10)
+
+		if (!(src in processing_items))
+			processing_items.Add(src)
+
 		return
 
 	relaymove(mob/user as mob)
@@ -109,6 +113,12 @@
 			if(src.health <= 0)
 				qdel(src)
 		return
+
+	proc/process()
+		for(var/mob/M in src)
+			if (M.bodytemperature > 0)
+				M.bodytemperature = max(M.bodytemperature-40,0)
+				src.health--
 
 	attack_hand(mob/user as mob)
 		user.visible_message("<span class='combat'><b>[user]</b> kicks [src]!</span>", "<span style=\"color:blue\">You kick [src].</span>")
@@ -151,6 +161,7 @@
 		return
 
 	disposing()
+		processing_items.Remove(src)
 		for(var/atom/movable/AM in src)
 			if(ismob(AM))
 				var/mob/M = AM
