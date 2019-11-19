@@ -939,6 +939,13 @@
 	amount = 1
 	heal_amt = 1
 
+/obj/item/reagent_containers/food/snacks/mushroom/cloak
+	name = "space mushroom"
+	desc = "A mushroom cap of Space Fungus. It doesn't smell of anything."
+	icon_state = "mushroom-M3"
+	amount = 1
+	heal_amt = 0
+
 // Foods
 
 /obj/item/reagent_containers/food/snacks/candy

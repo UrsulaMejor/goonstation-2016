@@ -15,7 +15,7 @@
 	vending = 2
 	genome = 30
 	assoc_reagents = list("space_fungus")
-	mutations = list(/datum/plantmutation/fungus/amanita,/datum/plantmutation/fungus/psilocybin)
+	mutations = list(/datum/plantmutation/fungus/amanita,/datum/plantmutation/fungus/psilocybin,/datum/plantmutation/fungus/cloak)
 
 /datum/plant/lasher
 	name = "Lasher"

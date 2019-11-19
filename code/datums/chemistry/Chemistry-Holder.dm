@@ -625,6 +625,12 @@ datum
 					spectro = 1
 
 			if (spectro)
+				if("cloak_juice" in reagent_list)
+					var/datum/reagent/cloaker = reagent_list["cloak_juice"]
+					if(cloaker.volume >= 5)
+						. += "<br><span style=\"color:red\">ERR: SPECTROSCOPIC ANALYSIS OF THIS SUBSTANCE IS NOT POSSIBLE.</span>"
+						return
+
 				. += "<br><span style=\"color:red\">Spectroscopic analysis:</span>"
 
 				for(var/current_id in reagent_list)

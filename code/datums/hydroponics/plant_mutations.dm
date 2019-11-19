@@ -271,6 +271,15 @@
 	chance = 20
 	assoc_reagents = list("amanitin")
 
+/datum/plantmutation/fungus/cloak
+	name = "Cloaked Panellus"
+	iconmod = "Cloak"
+	crop = /obj/item/reagent_containers/food/snacks/mushroom/cloak
+	PTrange = list(null,10) //low potency
+	CZrange = list(25,null) // high crop size
+	chance = 10
+	assoc_reagents = list("cloak_juice")
+
 // Lasher Mutations
 
 /datum/plantmutation/lasher/berries

@@ -217,7 +217,15 @@
 
 	if (A.reagents)
 		if (A.reagents.reagent_list.len > 0)
+			if("cloak_juice" in A.reagents.reagent_list)
+				var/datum/reagent/cloaker = A.reagents.reagent_list["cloak_juice"]
+				if(cloaker.volume >= 5)
+					data = "<span style=\"color:red\">ERR: SPECTROSCOPIC ANALYSIS OF THIS SUBSTANCE IS NOT POSSIBLE.</span>"
+					return data
+
+
 			var/reagents_length = A.reagents.reagent_list.len
+
 			data = "<span style='color:blue'>[reagents_length] chemical agent[reagents_length > 1 ? "s" : ""] found in [A].</span>"
 
 			for (var/current_id in A.reagents.reagent_list)

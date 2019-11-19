@@ -713,6 +713,19 @@ datum
 					else boutput(M, "<span style=\"color:red\">Yuck!</span>")
 				return
 
+		cloak_juice
+			name = "cloaked panellus extract"
+			id = "cloak_juice"
+			description = "<br><span style=\"color:red\">ERR: SPECTROSCOPIC ANALYSIS OF THIS SUBSTANCE IS NOT POSSIBLE.</span>"
+			reagent_state = LIQUID
+			fluid_r = 50
+			fluid_g = 50
+			fluid_b = 255
+			transparency = 50
+			value = 5
+			hygiene_value = -3
+			depletion_rate = 0.1
+
 		cryostylane
 			name = "cryostylane"
 			id = "cryostylane"
