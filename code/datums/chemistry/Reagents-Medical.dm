@@ -994,12 +994,15 @@ datum
 			on_mob_life(var/mob/M)
 				if(!M) M = holder.my_atom
 				if(M.bodytemperature < M.base_body_temp - 100)
+					var/health_before = M.health
 					if(M.get_oxygen_deprivation())
 						M.take_oxygen_deprivation(-10)
 					if(M.get_toxin_damage())
 						M.take_toxin_damage(-3)
 					M.HealDamage("All", 12, 12)
-					M.bodytemperature = min(M.bodytemperature+35,M.base_body_temp)
+					if(M.health > health_before)
+						var/increase = min((M.health - health_before)/37*25,25) //12+12+3+10 = 37 health healed possible, 25 max temp increase possible
+						M.bodytemperature = min(M.bodytemperature+increase,M.base_body_temp)
 
 				M.updatehealth()
 				if(prob(25)) M.UpdateDamageIcon() // gonna leave this one on for now, but only call it a quarter of the time

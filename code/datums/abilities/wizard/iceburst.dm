@@ -110,8 +110,7 @@
 
 		if(prob(25))
 			src.health--
-			if(src.health <= 0)
-				qdel(src)
+			src.check_health()
 		return
 
 	proc/process()
@@ -119,14 +118,20 @@
 			if (M.bodytemperature > 0)
 				M.bodytemperature = max(M.bodytemperature-40,0)
 				src.health--
+				src.check_health()
 
 	attack_hand(mob/user as mob)
 		user.visible_message("<span class='combat'><b>[user]</b> kicks [src]!</span>", "<span style=\"color:blue\">You kick [src].</span>")
 
 		src.health -= 2
+		src.check_health()
+		return
+
+	proc/check_health()
 		if(src.health <= 0)
 			qdel(src)
-		return
+			return 1
+		return 0
 
 	bullet_act(var/obj/projectile/P)
 		var/damage = 0
@@ -147,15 +152,12 @@
 			if(D_ENERGY)
 				src.health -= (damage/4)
 
-		if(src.health <= 0)
-			qdel(src)
-
+		src.check_health()
 		return
 
 	attackby(obj/item/W as obj, mob/user as mob)
 		src.health -= W.force
-		if(src.health <= 0)
-			qdel(src)
+		if(src.check_health())
 			return
 		..()
 		return
