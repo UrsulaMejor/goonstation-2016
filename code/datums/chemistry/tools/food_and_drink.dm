@@ -883,6 +883,34 @@
 	rc_flags = RC_SPECTRO
 	initial_volume = 15
 
+
+/obj/item/reagent_containers/food/drinks/duo
+	name = "red duo cup"
+	desc = "Can't imagine a party without a few dozen these on the lawn afterward."
+	icon_state = "duo"
+	item_state = "duo"
+	initial_volume = 30
+	var/image/fluid_image
+
+	New()
+		..()
+		fluid_image = image(src.icon, "fluid-duo")
+		update_icon()
+
+	on_reagent_change()
+		src.update_icon()
+
+	proc/update_icon()
+		src.overlays = null
+		if (src.reagents.total_volume == 0)
+			icon_state = "duo"
+		if (src.reagents.total_volume > 0)
+			var/datum/color/average = reagents.get_average_color()
+			if (!fluid_image)
+				fluid_image = image(src.icon, "fluid-duo")
+			fluid_image.color = average.to_rgba()
+			src.overlays += src.fluid_image
+
 /obj/item/reagent_containers/food/drinks/pitcher
 	name = "glass pitcher"
 	desc = "A big container for holding a lot of liquid that you then serve to people. Probably alcohol, let's be honest."

@@ -491,6 +491,21 @@
 	containername = "Holiday Supplies"
 #endif
 
+/datum/supply_packs/bday
+	name = "Birthday Supplies"
+	desc = "Perfect for celebrating that special day!"
+	contains = list(/obj/item/clothing/head/birthday = 3,
+					/obj/item/clothing/head/birthday/blue = 3,
+					/obj/item/wrapping_paper = 2,
+					/obj/item/scissors,
+					/obj/item/reagent_containers/food/drinks/duo = 6,
+					/obj/item/reagent_containers/food/drinks/bottle/beer = 6,
+					/obj/item/reagent_containers/food/snacks/cake/chocolate = 1)
+	cost = 750
+	containertype = /obj/storage/crate
+	containername = "Birthday Supplies"
+
+
 /datum/supply_packs/banking_kit
 	name = "Banking Kit"
 	desc = "Circuit Boards: 1x Bank Records, 1x ATM"

@@ -175,6 +175,18 @@
 			target.reagents.temperature_reagents(2500,10)
 		return
 
+/obj/item/clothing/head/birthday
+	name = "Birthday Hat"
+	icon_state = "birthday-pink"
+	item_state = "birthday-pink"
+	desc = "Happy birthday to you, happy birthday to you, the rest of this hat is copyrighted."
+
+/obj/item/clothing/head/birthday/blue
+	name = "Birthday Hat"
+	icon_state = "birthday-blue"
+	item_state = "birthday-blue"
+	desc = "Happy birthday to you, happy birthday to you, in 200 years nobody will remember you."
+
 /obj/item/clothing/head/caphat
 	name = "Captain's hat"
 	icon_state = "captain"
