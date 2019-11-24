@@ -232,3 +232,18 @@
 	genome = 18
 	nectarlevel = 10
 	assoc_reagents = list("juice_strawberry")
+
+/datum/plant/blueberry
+	name = "Blueberry"
+	category = "Fruit"
+	seedcolor = "#0000FF"
+	crop = /obj/item/reagent_containers/food/snacks/plant/blueberry
+	starthealth = 10
+	growtime = 60
+	harvtime = 120
+	cropsize = 2
+	harvests = 3
+	endurance = 1
+	genome = 18
+	nectarlevel = 10
+	assoc_reagents = list("juice_blueberry")

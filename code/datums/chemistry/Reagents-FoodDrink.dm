@@ -2268,6 +2268,16 @@ datum
 			reagent_state = LIQUID
 			thirst_value = 1.5
 
+		fooddrink/juice_blueberry
+			name = "blueberry juice"
+			id = "juice_blueberry"
+			fluid_r = 97
+			fluid_g = 64
+			fluid_b = 73
+			description = "Don't get it on your hands or it'll be there forever."
+			reagent_state = LIQUID
+			thirst_value = 1.5
+
 		fooddrink/juice_cherry
 			name = "cherry juice"
 			id = "juice_cherry"

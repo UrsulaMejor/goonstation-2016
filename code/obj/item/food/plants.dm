@@ -414,6 +414,16 @@
 	food_color = "#FF2244"
 	plant_reagent = "juice_strawberry"
 
+/obj/item/reagent_containers/food/snacks/plant/blueberry/
+	name = "blueberry"
+	desc = "A freshly picked blueberry."
+	icon_state = "blueberry"
+	planttype = /datum/plant/blueberry
+	amount = 1
+	heal_amt = 1
+	food_color = "#0000FF"
+	plant_reagent = "juice_blueberry"
+
 /obj/item/reagent_containers/food/snacks/plant/apple/
 	name = "apple"
 	desc = "Implied by folklore to repel medical staff."
