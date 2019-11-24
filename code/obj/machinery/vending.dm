@@ -152,6 +152,7 @@
 		product_list += new/datum/data/vending_product("/obj/item/reagent_containers/food/snacks/fries", 20, cost=3)
 		product_list += new/datum/data/vending_product("/obj/item/reagent_containers/food/drinks/noodlecup", 20, cost=2)
 		product_list += new/datum/data/vending_product("/obj/item/reagent_containers/food/snacks/burrito", 20, cost=3)
+		product_list += new/datum/data/vending_product("/obj/item/reagent_containers/food/snacks/popsicle",5,cost=5)
         // Go away, every flavor beans...
 		//product_list += new/datum/data/vending_product("/obj/item/kitchen/everyflavor_box", 20, cost=15)
 

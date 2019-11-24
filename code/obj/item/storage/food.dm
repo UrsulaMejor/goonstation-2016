@@ -75,3 +75,9 @@
 			var/obj/item/reagent_containers/food/snacks/candy/newcandy = new newcandy_path(src)
 			if (prob(5))
 				newcandy.razor_blade = 1
+
+/obj/item/storage/box/popsicles
+	name = "popsicles"
+	desc = "A box of generic unbranded popsicles."
+	icon_state = "popsiclebox"
+	spawn_contents = list(/obj/item/reagent_containers/food/snacks/popsicle = 7)

@@ -539,7 +539,8 @@
 	/obj/item/reagent_containers/food/drinks/milk = 5,\
 	/obj/item/kitchen/food_box/egg_box = 2,\
 	/obj/item/storage/box/donkpocket_kit,\
-	/obj/item/storage/box/bacon_kit = 2)
+	/obj/item/storage/box/bacon_kit = 2,\
+	/obj/item/storage/box/popsicles)
 	make_my_stuff()
 		..()
 		if (prob(25))
