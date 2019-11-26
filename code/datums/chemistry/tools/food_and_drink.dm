@@ -178,7 +178,7 @@
 								user.visible_message("<span style=\"color:blue\"><b>[user]</b> spits out a seed.</span>",\
 								"<span style=\"color:blue\">You spit out a seed.</span>")
 					user.u_equip(src)
-					on_finish(M)
+					on_finish(M, user) // popsicles use user to put the popsicle stick in their hand
 					qdel(src)
 				return 1
 			else
@@ -209,7 +209,7 @@
 					M.visible_message("<span style=\"color:red\">[M] finishes eating [src].</span>",\
 					"<span style=\"color:red\">You finish eating [src].</span>")
 					user.u_equip(src)
-					on_finish(M)
+					on_finish(M,user) // popsicles use user to put the popsicle stick in their hand
 					qdel(src)
 				return 1
 

@@ -111,9 +111,9 @@
 		if(prob(8))
 			src.melt(user)
 
-	on_finish(mob/eater)
+	on_finish(mob/eater, var/mob/user)
 		var/obj/item/stick/S = new
-		eater.put_in_hand_or_drop(S)
+		user.put_in_hand_or_drop(S)
 		..()
 
 	proc/melt(var/mob/user)
