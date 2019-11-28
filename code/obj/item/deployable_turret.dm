@@ -667,7 +667,10 @@
 	Weld it to the floor to secure it.<br>
 	While secured, using a screwdriver on the turret will turn it on, and using a wrench on it will set the angle.<br>
 	Setting the angle will bring up a prompt to choose a target. Direct the turret to a sightline by pointing at it.<br>
-	Welding the turret while it is active will allow you to perform repairs.<br>"}
+	Welding the turret while it is active will allow you to perform repairs.<br>
+	This turret is equipped with two quick-deploy charges installed.<br>
+	When thrown, one quick-deploy charge will be used, automatically securing and activating the turret.<br>
+	The quick-deployed turret will point in the direction it was thrown."}
 
 /obj/item/paper/narcs_manual
 	name = "paper- 'Nanotrasen Automatic Riot Control System'"
