@@ -11,11 +11,12 @@
 	throwforce = 10.0
 	throw_speed = 1
 	throw_range = 5
-	w_class = 4
+	w_class = 3
 	health = 100
 	var/emagged = 0
 	var/damage_words = "fully operational!"
 	var/icon_tag = "st"
+	var/quick_deploy_fuel = 2
 
 	New()
 		..()
@@ -30,6 +31,7 @@
 		src.loc = get_turf(user)
 		src.spawn_turret(user.dir)
 		user.u_equip(src)
+		src.loc = get_turf(user)
 		qdel(src)
 
 	proc/spawn_turret(var/direct)
@@ -37,6 +39,8 @@
 		turret.health = src.health // NO FREE REPAIRS, ASSHOLES
 		turret.emagged = src.emagged
 		turret.damage_words = src.damage_words
+		turret.quick_deploy_fuel = src.quick_deploy_fuel
+		return turret
 
 	emag_act(var/user, var/emag)
 		if(src.emagged)
@@ -44,6 +48,20 @@
 		src.emagged = 1
 		boutput(user,"You short out the safeties on the turret.")
 		src.damage_words += "<br><span style='color: red'>Its safety indicator is off!</span>"
+
+	throw_at(atom/target, range, speed, list/params, turf/thrown_from)
+		..(target,range,speed)
+		if(src.quick_deploy_fuel > 0)
+			var/turf/thrown_to = get_turf(src)
+			boutput(world,"[thrown_to.x],[thrown_to.y],[thrown_to.z]")
+			boutput(world,"[thrown_from.x],[thrown_from.y],[thrown_from.z]")
+			var/spawn_direction = get_dir(thrown_to,thrown_from)
+			var/obj/deployable_turret/turret = src.spawn_turret(spawn_direction)
+			turret.set_angle(get_angle(thrown_from,thrown_to))
+			turret.quick_deploy()
+			qdel(src)
+
+
 
 /////////////////////////////
 //       Turret Code       //
@@ -76,6 +94,7 @@
 	var/waiting = 0 // tracks whether or not the turret is waiting
 	var/shooting = 0 // tracks whether we're currently in the process of shooting someone
 	var/icon_tag = "st"
+	var/quick_deploy_fuel = 2 // number of quick deploys the turret has left
 
 	New(var/direction)
 		..()
@@ -293,6 +312,17 @@
 
 		return
 
+	proc/quick_deploy()
+		if(!(src.quick_deploy_fuel > 0))
+			return
+		src.quick_deploy_fuel--
+		src.visible_message("<span style='color: red'>[src]'s quick deploy system engages, automatically securing it!</span>")
+		playsound(src.loc, "sound/items/Welder2.ogg", 50, 1)
+		src.anchored = 1
+		src.active = 1
+		src.icon_state = "[src.icon_tag]_idle"
+
+
 
 	bullet_act(var/obj/projectile/P)
 		if(istype(P.proj_data,/datum/projectile/energy_bolt)) // fuck tasers
@@ -336,6 +366,8 @@
 		deployer.health = src.health // NO FREE REPAIRS, ASSHOLES
 		deployer.emagged = src.emagged
 		deployer.damage_words = src.damage_words
+		deployer.quick_deploy_fuel = src.quick_deploy_fuel
+		return deployer
 
 
 	proc/seek_target()
@@ -548,14 +580,18 @@
 	desc = "A Nanotrasen Automatic Riot Control System."
 	icon = 'icons/obj/turrets.dmi'
 	icon_state = "st_deployer"
+	w_class = 2
 	health = 125
 	icon_tag = "nt"
+	quick_deploy_fuel = 0
 
 	spawn_turret(var/direct)
 		var/obj/deployable_turret/riot/turret = new /obj/deployable_turret/riot(src.loc,direction=direct)
 		turret.health = src.health
 		turret.emagged = src.emagged
 		turret.damage_words = src.damage_words
+		turret.quick_deploy_fuel = src.quick_deploy_fuel
+		return turret
 
 /obj/deployable_turret/riot
 	name = "N.A.R.C.S. Deployer"
@@ -571,6 +607,7 @@
 	fire_rate = 1 // rate of fire in shots per second
 	angle_arc_size = 60
 	icon_tag = "nt"
+	quick_deploy_fuel = 0
 
 	New(var/direction)
 		..(direction=direction)
@@ -606,6 +643,9 @@
 		deployer.health = src.health
 		deployer.emagged = src.emagged
 		deployer.damage_words = src.damage_words
+		deployer.quick_deploy_fuel = src.quick_deploy_fuel
+		return deployer
+
 
 	emag_act(var/user, var/emag)
 		..()

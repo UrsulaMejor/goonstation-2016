@@ -144,7 +144,7 @@
 		src.throwing = 0
 	..()
 
-/atom/movable/proc/throw_at(atom/target, range, speed)
+/atom/movable/proc/throw_at(atom/target, range, speed, list/params, turf/thrown_from)
 	//use a modified version of Bresenham's algorithm to get from the atom's current position to that of the target
 	if (!target) return
 	src.throwing = 1

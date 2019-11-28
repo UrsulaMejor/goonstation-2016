@@ -2616,7 +2616,8 @@
 	src.update_cursor()
 	hud.update_throwing()
 
-/mob/living/carbon/human/proc/throw_item(atom/target)
+/mob/living/carbon/human/proc/throw_item(atom/target, list/params)
+	var/turf/thrown_from = get_turf(src)
 	src.throw_mode_off()
 	if (usr.stat)
 		return
@@ -2667,7 +2668,7 @@
 		if (istype(item.loc, /turf/space) && istype(item, /mob))
 			var/mob/M = item
 			M.inertia_dir = get_dir(src,target)
-		item.throw_at(target, item.throw_range, item.throw_speed)
+		item.throw_at(target, item.throw_range, item.throw_speed, params, thrown_from)
 
 /mob/living/carbon/human/click(atom/target, list/params)
 	if (src.in_throw_mode || params.Find("shift"))
