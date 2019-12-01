@@ -588,7 +588,7 @@
 	name = "N.A.R.C.S."
 	desc = "A Nanotrasen Automatic Riot Control System."
 	icon_state = "st_deployer"
-	w_class = 2
+	w_class = 4
 	health = 125
 	icon_tag = "nt"
 	quick_deploy_fuel = 0
