@@ -5,7 +5,7 @@
 /obj/item/turret_deployer
 	name = "NAS-T Deployer"
 	desc = "A Nuclear Agent Sentry Turret Deployer. Use it in your hand to deploy."
-	icon = 'icons/obj/turrets.dmi'
+	icon = 'icons/obj/syndieturret.dmi'
 	icon_state = "st_deployer"
 	force = 3.0
 	throwforce = 10.0
@@ -13,7 +13,7 @@
 	throw_range = 5
 	w_class = 3
 	health = 100
-	var/emagged = 0
+	//var/emagged = 0 removing all emag stuff because it's a bad idea in retrospect
 	var/damage_words = "fully operational!"
 	var/icon_tag = "st"
 	var/quick_deploy_fuel = 2
@@ -37,17 +37,19 @@
 	proc/spawn_turret(var/direct)
 		var/obj/deployable_turret/turret = new /obj/deployable_turret(src.loc,direction=direct)
 		turret.health = src.health // NO FREE REPAIRS, ASSHOLES
-		turret.emagged = src.emagged
+		//turret.emagged = src.emagged
 		turret.damage_words = src.damage_words
 		turret.quick_deploy_fuel = src.quick_deploy_fuel
 		return turret
 
+	/*
 	emag_act(var/user, var/emag)
 		if(src.emagged)
 			return
 		src.emagged = 1
 		boutput(user,"You short out the safeties on the turret.")
 		src.damage_words += "<br><span style='color: red'>Its safety indicator is off!</span>"
+	*/
 
 	throw_at(atom/target, range, speed, list/params, turf/thrown_from)
 		..(target,range,speed)
@@ -71,7 +73,7 @@
 
 	name = "NAS-T"
 	desc = "A Nuclear Agent Sentry Turret."
-	icon = 'icons/obj/turrets.dmi'
+	icon = 'icons/obj/syndieturret.dmi'
 	icon_state = "st_off"
 	anchored = 0
 	density = 1
@@ -89,7 +91,7 @@
 	var/fire_rate = 3 // rate of fire in shots per second
 	var/angle_arc_size = 30
 	var/active = 0 // are we gonna shoot some peeps?
-	var/emagged = 0
+	//var/emagged = 0
 	var/damage_words = "fully operational!"
 	var/waiting = 0 // tracks whether or not the turret is waiting
 	var/shooting = 0 // tracks whether we're currently in the process of shooting someone
@@ -261,9 +263,10 @@
 					src.target = null
 					src.spawn_deployer()
 					qdel(src)
-
+		/*
 		else if (istype(W, /obj/item/card/emag))
 			return
+		*/
 
 		else if (istype(W, /obj/item/screwdriver))
 
@@ -351,8 +354,10 @@
 			if(0 to 29)
 				damage_words = "to be on the verge of falling apart!"
 
+		/*
 		if(src.emagged)
 			damage_words += "<br><span style='color: red'>Its safety indicator is off!</span>"
+		*/
 
 
 	proc/die()
@@ -364,7 +369,7 @@
 	proc/spawn_deployer()
 		var/obj/item/turret_deployer/deployer = new /obj/item/turret_deployer(src.loc)
 		deployer.health = src.health // NO FREE REPAIRS, ASSHOLES
-		deployer.emagged = src.emagged
+		//deployer.emagged = src.emagged
 		deployer.damage_words = src.damage_words
 		deployer.quick_deploy_fuel = src.quick_deploy_fuel
 		return deployer
@@ -454,8 +459,10 @@
 
 
 	proc/is_friend(var/mob/living/C) //tried to keep this generic in case you want to make a turret that only shoots monkeys or something
+		/*
 		if (src.emagged)
 			return 0 // NO FRIENDS :'[
+		*/
 		if (istype(C,/mob/living/carbon/human))
 			var/mob/living/carbon/human/H = C
 			if (istype(H.wear_id,/obj/item/card/id/syndicate))
@@ -517,12 +524,14 @@
 		animate(transform = matrix(transform_original, ang/3, MATRIX_ROTATE | MATRIX_MODIFY), time = 10/3, loop = 0) // needs to do in multiple steps because byond takes shortcuts
 		animate(transform = matrix(transform_original, ang/3, MATRIX_ROTATE | MATRIX_MODIFY), time = 10/3, loop = 0) // :argh:
 
+	/*
 	emag_act(var/user, var/emag)
 		if(src.emagged)
 			return
 		src.emagged = 1
 		boutput(user,"You short out the safeties on the turret.")
 		src.damage_words += "<br><span style='color: red'>Its safety indicator is off!</span>"
+	*/
 
 
 /////////////////////////////
@@ -578,7 +587,6 @@
 /obj/item/turret_deployer/riot
 	name = "N.A.R.C.S."
 	desc = "A Nanotrasen Automatic Riot Control System."
-	icon = 'icons/obj/turrets.dmi'
 	icon_state = "st_deployer"
 	w_class = 2
 	health = 125
@@ -588,7 +596,7 @@
 	spawn_turret(var/direct)
 		var/obj/deployable_turret/riot/turret = new /obj/deployable_turret/riot(src.loc,direction=direct)
 		turret.health = src.health
-		turret.emagged = src.emagged
+		//turret.emagged = src.emagged
 		turret.damage_words = src.damage_words
 		turret.quick_deploy_fuel = src.quick_deploy_fuel
 		return turret
@@ -596,7 +604,6 @@
 /obj/deployable_turret/riot
 	name = "N.A.R.C.S. Deployer"
 	desc = "A Nanotrasen Automatic Riot Control System Deployer. Use it in your hand to deploy."
-	icon = 'icons/obj/turrets.dmi'
 	health = 125
 	max_health = 125
 	wait_time = 20 //wait if it can't find a target
@@ -611,18 +618,23 @@
 
 	New(var/direction)
 		..(direction=direction)
+		/*
 		spawn(src.wait_time)
+
 			if (src.emagged)
 				src.projectile_type = /datum/projectile/bullet/a12
 				src.current_projectile = new/datum/projectile/bullet/a12
+		*/
 
 	shoot(var/turf/target, var/start, var/user, var/bullet = 0)
 		flick("[src.icon_tag]_shoot",src)
 		..(target,start,user,bullet)
 
 	is_friend(var/mob/living/C)
+		/*
 		if (src.emagged)
 			return 0
+		*/
 		if (istype(C,/mob/living/carbon/human))
 			var/mob/living/carbon/human/H = C
 			if (istype(H.wear_id,/obj/item/card/id)) //This goes off appearance because people can change jobs mid-round... but that also means agent ids are a pretty hard counter. TODO: Fix?
@@ -641,16 +653,17 @@
 	spawn_deployer()
 		var/obj/item/turret_deployer/riot/deployer = new /obj/item/turret_deployer/riot(src.loc)
 		deployer.health = src.health
-		deployer.emagged = src.emagged
+		//deployer.emagged = src.emagged
 		deployer.damage_words = src.damage_words
 		deployer.quick_deploy_fuel = src.quick_deploy_fuel
 		return deployer
 
-
+	/*
 	emag_act(var/user, var/emag)
 		..()
 		src.projectile_type = /datum/projectile/bullet/a12
 		src.current_projectile = new/datum/projectile/bullet/a12
+	*/
 
 /////////////////////////////
 //       User Manuals      //
