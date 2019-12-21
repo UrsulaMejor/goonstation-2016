@@ -1,12 +1,12 @@
 // BEGIN_INTERNALS
 /*
 MAP_ZOOM: 1.000
-LAST_COMPILE_TIME: 1575959071
-DIR: browserassets browserassets\images browserassets\images\genetics browserassets\images\traders code code\chui\example code\datums code\datums\buildmodes code\datums\buildmodes\adventure code\datums\buildmodes\adventure\elements code\datums\chemistry code\datums\chemistry\tools code\datums\critter_mobs\health code\datums\mining code\obj code\obj\artifacts code\obj\artifacts\artifact_items icons icons\obj 
+LAST_COMPILE_TIME: 1576914694
+DIR: browserassets browserassets\images browserassets\images\genetics browserassets\images\traders code code\chui\example code\datums code\datums\buildmodes code\datums\buildmodes\adventure code\datums\buildmodes\adventure\elements code\datums\chemistry code\datums\genetics code\datums\mining code\obj code\obj\item code\obj\machinery code\WorkInProgress code\WorkInProgress\griffening code\WorkInProgress\Materials_Crafting icons icons\obj libs maps maps\config sound sound\vox 
 AUTO_FILE_DIR: OFF
 MAP_ICON_TYPE: 0
 LAST_COMPILE_VERSION: 513.1501
-WINDOW: code\datums\genetics\geneticsResearch.dm;code\datums\mining\ore.dm;code\datums\mining\cloud_storage.dm;icons\obj\mining.dmi
-FILE: icons\obj\mining.dmi
+WINDOW: code\datums\mining\ore.dm;code\datums\mining\cloud_storage.dm;icons\obj\mining.dmi;maps\config\standard.dm;code\obj\machinery\manufacturer.dm;code\obj\item\material.dm;maps\oretest.dmm;code\WorkInProgress\Materials_Crafting\Mat_RawMaterials.dm;code\WorkInProgress\Materials_Crafting\Mat_ProcsDefines.dm;code\WorkInProgress\Materials_Crafting\Mat_Materials.dm
+FILE: code\datums\mining\cloud_storage.dm
 */
 // END_INTERNALS
