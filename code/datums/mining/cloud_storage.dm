@@ -4,6 +4,7 @@
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore_storage_unit"
 	density = 1
+	anchored = 1
 	var/base_material_class = /obj/item/raw_material/
 
 	MouseDrop_T(atom/movable/O as mob|obj, mob/user as mob)
@@ -91,6 +92,7 @@
 		if(material_path in ores)
 			ores
 	*/
+
 	proc/get_ores()
 		var/list/ores = list()
 		for(var/obj/item/raw_material/R in src.contents)
@@ -106,5 +108,58 @@
 		return(ores)
 
 	attack_hand(var/mob/user as mob)
-		..()
+
 		var/list/ores = src.get_ores()
+
+		user.machine = src
+		var/dat = "<B>[src.name]</B>"
+
+		dat += "<br><HR>"
+
+		if (stat & BROKEN || stat & NOPOWER)
+			dat = "The screen is blank."
+			user << browse(dat, "window=manufact;size=400x500")
+			onclose(user, "mining_dropbox")
+			return
+
+		if(ores.len)
+			for(var/ore in ores)
+				dat += "<A href='?src=\ref[src];eject=[ore]'><B>[ore]:</B></A> [ores[ore]]<br>"
+		else
+			dat += "No ores currently loaded.<br>"
+
+		user << browse(dat, "window=manufact;size=450x500")
+		onclose(user, "mining_dropbox")
+
+
+
+	Topic(href, href_list)
+
+		if(stat & BROKEN || stat & NOPOWER)
+			return
+
+		if(usr.stat || usr.restrained())
+			return
+
+		if ((usr.contents.Find(src) || ((get_dist(src, usr) <= 1) && istype(src.loc, /turf))))
+			usr.machine = src
+
+			if (href_list["eject"])
+				var/ore = href_list["eject"]
+				var/ejectamt = 0
+				var/turf/ejectturf = get_turf(usr)
+				for(var/obj/item/raw_material/R in src.contents)
+					if (R.material_name == ore)
+						if (!ejectamt)
+							ejectamt = input(usr,"How many ores do you want to eject?","Eject Ores") as num
+							if (ejectamt <= 0 || get_dist(src, usr) > 1)
+								break
+						if (!ejectturf)
+							break
+						R.set_loc(ejectturf)
+						ejectamt--
+						if (ejectamt <= 0)
+							break
+
+			src.updateUsrDialog()
+		return
