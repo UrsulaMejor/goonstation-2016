@@ -1,5 +1,10 @@
+#define ROCKBOX_STANDARD_FEE 5
+var/global/rockbox_client_fee_min = 1
+var/global/rockbox_client_fee_pct = 10
+var/global/rockbox_premium_purchased = 0
+
 /obj/machinery/ore_cloud_storage_container
-	name = "Ore Cloud Storage Container"
+	name = "Rockbox&trade; Ore Cloud Storage Container"
 	desc = "This thing stores ore in \"the cloud\" for the station to use. Best not to think about it too hard."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore_storage_unit"
@@ -10,6 +15,8 @@
 	var/list/for_sale = list()
 	var/list/ores = list()
 	var/list/sellable_ores = list()
+	var/health = 100
+	var/broken = 0
 
 	MouseDrop_T(atom/movable/O as mob|obj, mob/user as mob)
 
@@ -17,7 +24,7 @@
 			return
 
 		if(!istype(user,/mob/living/))
-			boutput(user, "<span style=\"color:red\">Only living mobs are able to use the manufacturer's quick-load feature.</span>")
+			boutput(user, "<span style=\"color:red\">Only living mobs are able to use the storage container's quick-load feature.</span>")
 			return
 
 		if (!istype(O,/obj/))
@@ -74,7 +81,15 @@
 			src.update_ores()
 
 		else
+			src.health = max(src.health-W.force,0)
+			src.check_health()
 			..()
+
+	proc/check_health()
+		if(!src.health)
+			src.broken = 1
+			src.icon_state = "ore_storage_unit-broken"
+			src.update_sellable()
 
 	proc/load_item(var/obj/item/O,var/mob/living/user)
 		if (!O)
@@ -125,6 +140,9 @@
 
 	proc/update_sellable()
 		var/list/new_sellable_ores = list()
+		if(src.broken)
+			src.sellable_ores = new_sellable_ores
+			return
 		for(var/ore in src.ores)
 			if(ore in src.for_sale)
 				if(for_sale[ore])
@@ -150,7 +168,7 @@
 
 		if (stat & BROKEN || stat & NOPOWER)
 			dat = "The screen is blank."
-			user << browse(dat, "window=manufact;size=400x500")
+			user << browse(dat, "window=mining_dropbox;size=400x500")
 			onclose(user, "mining_dropbox")
 			return
 
@@ -166,7 +184,7 @@
 		else
 			dat += "No ores currently loaded.<br>"
 
-		user << browse(dat, "window=manufact;size=450x500")
+		user << browse(dat, "window=mining_dropbox;size=450x500")
 		onclose(user, "mining_dropbox")
 
 
@@ -191,7 +209,8 @@
 			if (href_list["price"])
 				var/ore = href_list["price"]
 				var/new_price = null
-				new_price = input(usr,"What price would you like to set?","Set Sale Price",null) as num
+				new_price = input(usr,"What price would you like to set? (Min 0)","Set Sale Price",null) as num
+				new_price = max(0,new_price)
 				if(src.sell_price[ore])
 					sell_price[ore] = new_price
 				else
@@ -210,12 +229,12 @@
 			src.updateUsrDialog()
 		return
 
-	proc/eject_ores(var/ore, var/turf/ejectturf, var/ejectamt, var/magic = 0, var/user as mob)
+	proc/eject_ores(var/ore, var/turf/ejectturf, var/ejectamt, var/transmit = 0, var/user as mob)
 		for(var/obj/item/raw_material/R in src.contents)
 			if (R.material_name == ore)
 				if (!ejectamt)
 					ejectamt = input(usr,"How many ores do you want to eject?","Eject Ores") as num
-				if ((ejectamt <= 0 || get_dist(src, user) > 1) && !magic)
+				if ((ejectamt <= 0 || get_dist(src, user) > 1) && !transmit)
 					break
 				if (!ejectturf)
 					break
@@ -223,4 +242,9 @@
 				ejectamt--
 				if (ejectamt <= 0)
 					break
+		if(transmit)
+			flick("ore_storage_unit-transmit",src)
+			showswirl(ejectturf)
+			leaveresidual(ejectturf)
+
 		src.update_ores()

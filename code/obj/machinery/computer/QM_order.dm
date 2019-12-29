@@ -35,6 +35,12 @@
 			account = FindBankAccountByName(src.scan.registered)
 			if(account)
 				dat += "<B>Credits on Account:</B> [account.fields["current_money"]] Credits<BR><HR>"
+
+		dat += "<B>Rockbox&trade; Ore Cloud Storage Service Settings:</B><BR><small>"
+		dat += "<B>Rockbox&trade; Fees:</B> [!rockbox_premium_purchased ? ROCKBOX_STANDARD_FEE : 0] credit(s) per ore [!rockbox_premium_purchased ? "(Purchase our <A href='?src=\ref[src];premium_service=1'>Premium Service</A> to remove this fee!)" : ""]<BR>"
+		dat += "<B>Client Quartermaster Transaction Fee:</B> <A href='?src=\ref[src];fee_pct=1'>[rockbox_client_fee_pct]%</A><BR>"
+		dat += "<B>Client Quartermaster Transaction Fee Per Ore Minimum:</B> <A href='?src=\ref[src];fee_min=1'>[rockbox_client_fee_min] Credit(s)</A><BR>"
+		dat += "</small><HR>"
 		dat += {"<A href='?src=\ref[src];viewrequests=1'>View Requests</A><BR>
 		<A href='?src=\ref[src];order=1'>Request Items</A><BR>
 		<A href='?src=\ref[src];buypoints=1'>Purchase Supply Points</A><BR>
@@ -212,6 +218,28 @@
 
 	else if (href_list["mainmenu"])
 		src.temp = null
-	src.add_fingerprint(usr)
+
+	else if (href_list["fee_pct"])
+		var/fee_pct = null
+		fee_pct = input(usr,"What fee percent would you like to set? (Min 0)","Fee Percent per Transaction:",null) as num
+		fee_pct = max(0,fee_pct)
+		rockbox_client_fee_pct = fee_pct
+
+	else if (href_list["fee_min"])
+		var/fee_min = null
+		fee_min = input(usr,"What fee min would you like to set? (Min 0)","Minimum Fee per Transaction in Credits:",) as num
+		fee_min = max(0,fee_min)
+		rockbox_client_fee_min = fee_min
+
+	else if (href_list["premium_service"])
+		var/response = ""
+		response = alert(usr,"Would you like to purchase the Rockbox&trade; Premium Service for 10000 credits?",,"Yes","No")
+		if(response == "Yes")
+			if(wagesystem.shipping_budget >= 10000)
+				wagesystem.shipping_budget -= 10000
+				rockbox_premium_purchased = 1
+			else
+				boutput(usr,"<span style=\"color:blue\">Not enough money in the budget!</span>")
+
 	src.updateUsrDialog()
 	return

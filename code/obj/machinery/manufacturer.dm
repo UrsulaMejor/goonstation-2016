@@ -303,8 +303,8 @@
 			if(ores.len)
 				dat += "[S.name] at [get_turf(S).loc.name]:<br>"
 				for(var/ore in ores)
-					var/taxes = max(1,abs(S.sell_price[ore]*0.10)) //transaction taxes for the station budget
-					dat += "<B>[ore]:</B> [ores[ore]] ([S.sell_price[ore]+taxes]) (<A href='?src=\ref[src];purchase=1;storage=\ref[S];ore=[ore]'>Purchase</A>)<br>"
+					var/taxes = round(max(rockbox_client_fee_min,abs(S.sell_price[ore]*rockbox_client_fee_pct/100)),0.01) //transaction taxes for the station budget
+					dat += "<B>[ore]:</B> [ores[ore]] ($[S.sell_price[ore]+taxes+(!rockbox_premium_purchased ? ROCKBOX_STANDARD_FEE : 0)]/ore) (<A href='?src=\ref[src];purchase=1;storage=\ref[S];ore=[ore]'>Purchase</A>)<br>"
 
 		dat += "</small><HR>"
 
@@ -644,7 +644,7 @@
 				var/ore = href_list["ore"]
 				var/list/ores = storage.sellable_ores
 				var/price = storage.sell_price[ore]
-				var/taxes = max(1,abs(price*0.10)) //transaction taxes for the station budget
+				var/taxes = round(max(rockbox_client_fee_min,abs(price*rockbox_client_fee_pct/100)),0.01) //transaction taxes for the station budget
 
 				if(!scan)
 					src.temp = {"You have to scan a card in first.<BR>"}
@@ -666,10 +666,11 @@
 					if(ores[ore] >= quantity)
 						var/subtotal = round(price * quantity)
 						var/sum_taxes = round(taxes * quantity)
-						var/total = subtotal + sum_taxes
+						var/rockbox_fees = (!rockbox_premium_purchased ? ROCKBOX_STANDARD_FEE : 0) * quantity
+						var/total = subtotal + sum_taxes + rockbox_fees
 						if(account.fields["current_money"] >= total)
 							account.fields["current_money"] -= total
-							storage.eject_ores(ore, get_turf(usr), quantity, 1, usr)
+							storage.eject_ores(ore, get_turf(usr), quantity, transmit=1, user=usr)
 
 							 // This next bit is stolen from PTL Code
 							var/list/accounts = list()
@@ -681,14 +682,17 @@
 									accounts += t
 
 
-							//any non-divisible amounts go to the station budget
-
-							var/leftovers = subtotal%accounts.len
-							var/divisible_amount = subtotal - leftovers
-							if(divisible_amount)
-								for(var/datum/data/record/t in accounts)
-									t.fields["current_money"] += divisible_amount/accounts.len
-							wagesystem.station_budget += (leftovers + sum_taxes)
+							//any non-divisible amounts go to the shipping budget
+							var/leftovers = 0
+							if(accounts.len)
+								leftovers = subtotal%accounts.len
+								var/divisible_amount = subtotal - leftovers
+								if(divisible_amount)
+									for(var/datum/data/record/t in accounts)
+										t.fields["current_money"] += divisible_amount/accounts.len
+							else
+								leftovers = subtotal
+							wagesystem.shipping_budget += (leftovers + sum_taxes)
 
 
 
