@@ -6,6 +6,10 @@
 	density = 1
 	anchored = 1
 	var/base_material_class = /obj/item/raw_material/
+	var/list/sell_price = list()
+	var/list/for_sale = list()
+	var/list/ores = list()
+	var/list/sellable_ores = list()
 
 	MouseDrop_T(atom/movable/O as mob|obj, mob/user as mob)
 
@@ -57,18 +61,40 @@
 				sleep(0.5)
 				if (user.loc != staystill) break
 			boutput(user, "<span style=\"color:blue\">You finish stuffing materials into [src]!</span>")
+			src.update_ores()
 
 		else ..()
 
 		src.updateUsrDialog()
 
+	attackby(obj/item/W as obj, mob/user as mob)
+		if (istype(W, src.base_material_class) && src.accept_loading(user))
+			user.visible_message("<span style=\"color:blue\">[user] loads [W] into the [src].</span>", "<span style=\"color:blue\">You load [W] into the [src].</span>")
+			src.load_item(W,user)
+			src.update_ores()
+
+		else
+			..()
+
 	proc/load_item(var/obj/item/O,var/mob/living/user)
 		if (!O)
 			return
-		O.set_loc(src)
-		if (user && O)
-			user.u_equip(O)
-			O.dropped()
+		if(O.amount == 1)
+			O.set_loc(src)
+			if (user && O)
+				user.u_equip(O)
+				O.dropped()
+		else if(O.amount>1)
+			O.set_loc(src)
+			for(O.amount,O.amount > 0, O.amount--)
+				new O.type(src)
+			if (user && O)
+				user.u_equip(O)
+				O.dropped()
+			qdel(O)
+		else
+			return // uhhhhhh
+
 
 	proc/accept_loading(var/mob/user,var/allow_silicon = 0)
 		if (!user)
@@ -84,32 +110,38 @@
 			return 0
 		return 1
 
-	/*
-	proc/add_ore(var/obj/item/raw_material/R)
-		if(!istype(R))
-			return
-		var/material_path = R.type
-		if(material_path in ores)
-			ores
-	*/
-
-	proc/get_ores()
-		var/list/ores = list()
+	proc/update_ores()
+		var/list/new_ores = list()
 		for(var/obj/item/raw_material/R in src.contents)
-			if(!(R.material_name in ores))
-				ores += R.material_name
-				ores[R.material_name] = 1
+			if(!(R.material_name in new_ores))
+				new_ores += R.material_name
+				new_ores[R.material_name] = 1
 
 			else
-				ores[R.material_name]++
+				new_ores[R.material_name]++
+		src.ores = new_ores
+		src.update_sellable()
+		return
 
-		for(var/x in ores)
-			boutput(world,"[x] : [ores[x]]")
-		return(ores)
+	proc/update_sellable()
+		var/list/new_sellable_ores = list()
+		for(var/ore in src.ores)
+			if(ore in src.for_sale)
+				if(for_sale[ore])
+					if(!(ore in new_sellable_ores))
+						new_sellable_ores += ore
+						new_sellable_ores[ore] = ores[ore]
+					else
+						continue
+				else
+					continue
+
+		src.sellable_ores = new_sellable_ores
+
 
 	attack_hand(var/mob/user as mob)
 
-		var/list/ores = src.get_ores()
+		var/list/ores = src.ores
 
 		user.machine = src
 		var/dat = "<B>[src.name]</B>"
@@ -124,7 +156,13 @@
 
 		if(ores.len)
 			for(var/ore in ores)
-				dat += "<A href='?src=\ref[src];eject=[ore]'><B>[ore]:</B></A> [ores[ore]]<br>"
+				var/sellable = 0
+				var/price = 0
+				if(src.sell_price[ore] != null)
+					price = sell_price[ore]
+				if(src.for_sale[ore] != null)
+					sellable = src.for_sale[ore]
+				dat += "<B>[ore]:</B> [ores[ore]] (<A href='?src=\ref[src];sellable=[ore]'>[sellable ? "For Sale" : "Not For Sale"]</A>) (<A href='?src=\ref[src];price=[ore]'>[price]</A>) (<A href='?src=\ref[src];eject=[ore]'>Eject</A>)<br>"
 		else
 			dat += "No ores currently loaded.<br>"
 
@@ -146,20 +184,43 @@
 
 			if (href_list["eject"])
 				var/ore = href_list["eject"]
-				var/ejectamt = 0
 				var/turf/ejectturf = get_turf(usr)
-				for(var/obj/item/raw_material/R in src.contents)
-					if (R.material_name == ore)
-						if (!ejectamt)
-							ejectamt = input(usr,"How many ores do you want to eject?","Eject Ores") as num
-							if (ejectamt <= 0 || get_dist(src, usr) > 1)
-								break
-						if (!ejectturf)
-							break
-						R.set_loc(ejectturf)
-						ejectamt--
-						if (ejectamt <= 0)
-							break
+
+				src.eject_ores(ore,ejectturf,0,0,usr)
+
+			if (href_list["price"])
+				var/ore = href_list["price"]
+				var/new_price = null
+				new_price = input(usr,"What price would you like to set?","Set Sale Price",null) as num
+				if(src.sell_price[ore])
+					sell_price[ore] = new_price
+				else
+					sell_price += ore
+					sell_price[ore] = new_price
+
+			if (href_list["sellable"])
+				var/ore = href_list["sellable"]
+				if(src.for_sale[ore])
+					for_sale[ore] = !for_sale[ore]
+				else
+					for_sale += ore
+					for_sale[ore] = 1
+				update_sellable()
 
 			src.updateUsrDialog()
 		return
+
+	proc/eject_ores(var/ore, var/turf/ejectturf, var/ejectamt, var/magic = 0, var/user as mob)
+		for(var/obj/item/raw_material/R in src.contents)
+			if (R.material_name == ore)
+				if (!ejectamt)
+					ejectamt = input(usr,"How many ores do you want to eject?","Eject Ores") as num
+				if ((ejectamt <= 0 || get_dist(src, user) > 1) && !magic)
+					break
+				if (!ejectturf)
+					break
+				R.set_loc(ejectturf)
+				ejectamt--
+				if (ejectamt <= 0)
+					break
+		src.update_ores()
