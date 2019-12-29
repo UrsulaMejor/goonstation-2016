@@ -180,7 +180,7 @@ var/global/rockbox_premium_purchased = 0
 					price = sell_price[ore]
 				if(src.for_sale[ore] != null)
 					sellable = src.for_sale[ore]
-				dat += "<B>[ore]:</B> [ores[ore]] (<A href='?src=\ref[src];sellable=[ore]'>[sellable ? "For Sale" : "Not For Sale"]</A>) (<A href='?src=\ref[src];price=[ore]'>[price]</A>) (<A href='?src=\ref[src];eject=[ore]'>Eject</A>)<br>"
+				dat += "<B>[ore]:</B> [ores[ore]] (<A href='?src=\ref[src];sellable=[ore]'>[sellable ? "For Sale" : "Not For Sale"]</A>) (<A href='?src=\ref[src];price=[ore]'>$[price] per ore</A>) (<A href='?src=\ref[src];eject=[ore]'>Eject</A>)<br>"
 		else
 			dat += "No ores currently loaded.<br>"
 
