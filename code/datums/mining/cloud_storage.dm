@@ -126,36 +126,31 @@ var/global/rockbox_premium_purchased = 0
 		return 1
 
 	proc/update_ores()
-		var/list/new_ores = list()
+		src.ores.len = 0
 		for(var/obj/item/raw_material/R in src.contents)
-			if(!(R.material_name in new_ores))
-				new_ores += R.material_name
-				new_ores[R.material_name] = 1
+			if(!(R.material_name in ores))
+				ores += R.material_name
+				ores[R.material_name] = 1
 
 			else
-				new_ores[R.material_name]++
-		src.ores = new_ores
+				ores[R.material_name]++
 		src.update_sellable()
 		return
 
 	proc/update_sellable()
-		var/list/new_sellable_ores = list()
+		src.sellable_ores.len = 0
 		if(src.broken)
-			src.sellable_ores = new_sellable_ores
 			return
 		for(var/ore in src.ores)
 			if(ore in src.for_sale)
 				if(for_sale[ore])
-					if(!(ore in new_sellable_ores))
-						new_sellable_ores += ore
-						new_sellable_ores[ore] = ores[ore]
+					if(!(ore in sellable_ores))
+						sellable_ores += ore
+						sellable_ores[ore] = ores[ore]
 					else
 						continue
 				else
 					continue
-
-		src.sellable_ores = new_sellable_ores
-
 
 	attack_hand(var/mob/user as mob)
 
