@@ -761,6 +761,7 @@ var/datum/preMapLoad/preMapLoad = new
 #include "code\obj\item\tools.dm"
 #include "code\obj\item\toys.dm"
 #include "code\obj\item\uplinks.dm"
+#include "code\obj\item\wand.dm"
 #include "code\obj\item\assembly\detonator.dm"
 #include "code\obj\item\assembly\misc_assemblies.dm"
 #include "code\obj\item\assembly\shock_kit.dm"
@@ -1199,7 +1200,7 @@ var/datum/preMapLoad/preMapLoad = new
 #include "libs\Base64\hexadecimal.dm"
 #include "libs\Base64\text.dm"
 #include "maps\_disposaltester.dm"
-#include "maps\adv_test.dmm"
+#include "maps\testing_chamber.dmm"
 #include "maps\config\map.dm"
 #include "maps\placeholders\map_placeholders.dm"
 // END_INCLUDE
