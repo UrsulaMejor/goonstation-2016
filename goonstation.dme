@@ -489,6 +489,7 @@ var/datum/preMapLoad/preMapLoad = new
 #include "code\datums\randomevents\meteor_shower.dm"
 #include "code\datums\randomevents\radiation.dm"
 #include "code\datums\randomevents\random_event.dm"
+#include "code\datums\randomevents\sleeperagent.dm"
 #include "code\datums\randomevents\solar_flare.dm"
 #include "code\datums\randomevents\spatial_tear.dm"
 #include "code\datums\randomevents\virus.dm"
