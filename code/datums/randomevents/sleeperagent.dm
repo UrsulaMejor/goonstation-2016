@@ -57,7 +57,13 @@
 			broadcast_sound(signal_intro)
 
 		if(!src.admin_override)
-			num_agents = rand(0,2)
+			var/temp = rand(0,99)
+			if(temp < 50)
+				num_agents = 1
+			else if (temp < 75)
+				num_agents = 2
+			else
+				num_agents = 0
 		if(!num_agents)
 			return
 
@@ -92,6 +98,8 @@
 		H.show_text("<h2><font color=red><B>You have awakened as a syndicate sleeper agent!</B></font></h2>", "red")
 		H.mind.special_role = "hard-mode traitor"
 		H << browse(grabResource("html/traitorTips/traitorhardTips.html"),"window=antagTips;titlebar=1;size=600x400;can_minimize=0;can_resize=0")
+		if(!H.mind in ticker.mode.traitors)
+			ticker.mode.traitors += H.mind
 		if (H.mind.current)
 			H.mind.current.antagonist_overlay_refresh(1, 0)
 		var/obj_count = 1
@@ -100,10 +108,10 @@
 			obj_count++
 
 	proc/gen_numbers()
-		var/new_numbers = list()
-		for(var/i in numbers)
-			new_numbers += rand(1,99)
-		numbers = new_numbers
+		var/num_numbers = numbers.len
+		numbers.len = 0
+		for(var/i = 0, i < num_numbers, i++)
+			numbers += rand(1,99)
 
 	proc/gather_listeners()
 		listeners = list()
@@ -112,7 +120,7 @@
 				if (Hs.frequency == frequency)
 					listeners += H
 					boutput(H, "<span style=\"color:blue\">A peculiar noise intrudes upon the radio frequency of your [Hs].</span>")
-					if(H.client && !checktraitor(H))
+					if(H.client && !checktraitor(H) && H.client.preferences.be_traitor)
 						candidates += H
 				break
 		for (var/mob/living/silicon/robot/R in world)
