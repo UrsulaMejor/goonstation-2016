@@ -2422,6 +2422,20 @@ datum
 				holder.remove_reagent("life",created_volume + 1) //+1 to prevent any of those weird errors where you get 5.423E-09 of something or whatever.
 				return
 
+		crabby_party
+			name = "Crabby Party Secret Formula"
+			id = "crabby_party"
+			required_reagents = list("water"=1, "strange_reagent" = 1 ) // placeholder
+			instant = 1
+			required_temperature = T0C + 95
+			mix_phrase = "The substance leaps out of its container in excitement!"
+			var/static/reaction_count = 0
+
+			on_reaction(var/datum/reagents/holder, var/created_volume)
+				fucking_critter_bullshit_fuckcrap_limiter(reaction_count)
+				new /obj/critter/crab/party(get_turf(holder.my_atom))
+				return
+
 		//Hello, here are some fake werewolf serum precursors
 		werewolf_serum_fake1
 			name = "Werewolf Serum Precursor Alpha"

@@ -1276,3 +1276,84 @@ var/list/parrot_species = list(\
 			return
 		else
 			. = ..()
+
+/obj/critter/crab
+	name = "Crab"
+	desc = "Snip Snip."
+	icon_state = "crab"
+	butcherable = 1
+	density = 0
+	health = 20
+	aggressive = 0
+	defensive = 1
+	wanderer = 1
+	opensdoors = 0
+	atkcarbon = 1
+	atksilicon = 1
+	firevuln = 1
+	brutevuln = 1
+	generic = 1
+	angertext = "snips angrily at"
+	death_text = "%src% dies."
+
+	attackby(obj/item/W as obj, mob/living/user as mob)
+		if (src.alive && istype(W, /obj/item/clothing/head/cowboy))
+			user.visible_message("<b>[user]</b> gives [src.name] the [W]!","You give [src.name] the [W].")
+			qdel(W)
+			src.visible_message("[src.name] starts dancing!")
+			new /obj/critter/crab/party(get_turf(src))
+			qdel(src)
+		else
+			..()
+
+/obj/critter/crab/party
+	name = "Party Crab"
+	desc = "This crab is having way more fun than you."
+	icon_state = "crab_party"
+	generic = 0
+	var/dance_forever = 0
+	death_text = "%src% stops dancing forever."
+
+	proc/do_a_little_dance()
+		if (!src.muted)
+			var/msg = pick("gets down","yee claws", "is feelin' it now", "dances to that song! The one that goes \"beep boo boo bop boo boo beep\"", "does a little dance","dances like no one's watching")
+			src.visible_message("<b>[src]</b> [msg]!",2)
+		flick(pick("crab_party-getdown","crab_party-hop","crab_party-partyhard"),src)
+
+	ai_think()
+		..()
+		if(task == "thinking" || task == "wandering")
+			if(dance_forever || prob(2)) do_a_little_dance()
+
+	seek_target()
+		..()
+		if(src.target)
+			src.visible_message("<span class='combat'><b>[src]</b> [src.angertext] [src.target]!</span>")
+			spawn(0)
+				playsound(src.loc, "sound/items/Wirecutter.ogg", 30, 0)
+				sleep(1)
+				playsound(src.loc, "sound/items/Wirecutter.ogg", 30, 0)
+				sleep(1)
+				playsound(src.loc, "sound/items/Wirecutter.ogg", 30, 0)
+
+	CritterAttack(mob/M)
+		if(ismob(M))
+			src.attacking = 1
+			src.visible_message("<span class='combat'><B>[src]</B> snips [src.target] with its claws!</span>")
+			random_brute_damage(src.target, 2)
+			spawn(0)
+				playsound(src.loc, "sound/items/Wirecutter.ogg", 30, 0)
+				sleep(3)
+				playsound(src.loc, "sound/items/Wirecutter.ogg", 30, 0)
+			spawn(rand(1,10))
+				src.attacking = 0
+		return
+
+	ChaseAttack(mob/M)
+		src.visible_message("<span class='combat'><B>[src]</B> parties hard into [M]!</span>")
+		playsound(src.loc, "sound/weapons/genhit1.ogg", 50, 1, -1)
+
+		if(ismob(M))
+			M.stunned += rand(0,2)
+			M.weakened += rand(0,1)
+
