@@ -767,6 +767,7 @@ var/datum/preMapLoad/preMapLoad = new
 #include "code\obj\item\assembly\single_tank_bomb.dm"
 #include "code\obj\item\clothing\armor.dm"
 #include "code\obj\item\clothing\chameleon_js.dm"
+#include "code\obj\item\clothing\cloaker_hoodie.dm"
 #include "code\obj\item\clothing\ears.dm"
 #include "code\obj\item\clothing\gimmick.dm"
 #include "code\obj\item\clothing\glasses.dm"
@@ -1199,7 +1200,6 @@ var/datum/preMapLoad/preMapLoad = new
 #include "libs\Base64\hexadecimal.dm"
 #include "libs\Base64\text.dm"
 #include "maps\_disposaltester.dm"
-#include "maps\adv_test.dmm"
 #include "maps\config\map.dm"
 #include "maps\placeholders\map_placeholders.dm"
 // END_INCLUDE

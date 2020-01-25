@@ -80,6 +80,8 @@
 	OnDrop()
 		if (the_mob) the_mob.transforming = 0
 ////////////////////////////////////////////////////////////
+
+
 /obj/item/clothing/head/helmet/welding/abilities = list(/obj/ability_button/mask_toggle)
 
 

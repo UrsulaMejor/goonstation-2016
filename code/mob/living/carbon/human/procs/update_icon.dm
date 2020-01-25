@@ -452,6 +452,11 @@
 			shielded = 2
 			break
 
+	for (var/obj/item/clothing/suit/hoodie/cloaker/S in src)
+		if (S.hood && (src.wear_suit == S))
+			shielded = 2
+			break
+
 	if (shielded == 2) src.invisibility = 2
 	else src.invisibility = 0
 
