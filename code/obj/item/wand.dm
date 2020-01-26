@@ -76,7 +76,10 @@ obj/item/wand/transmutation
 			spawn(1)
 				src.possible_materials = material_cache
 				src.stored_material = pick(possible_materials)
-		..()
+				..()
+		else
+			..()
+
 
 	set_vars()
 		src.setMaterial(getCachedMaterial(stored_material))
