@@ -62,6 +62,10 @@
 		magcount += 2
 	if (istype(src.l_hand, /obj/item/staff))
 		magcount += 2
+	if (istype(src.r_hand, /obj/item/wand))
+		magcount += 4
+	if (istype(src.l_hand, /obj/item/wand))
+		magcount += 4
 	if (magcount >= 4) return 1
 	else return 0
 
@@ -71,6 +75,8 @@
 		if (C.magical) magcount += 1
 	if (src.find_in_hands(/obj/item/staff))
 		magcount += 2
+	if (src.find_in_hands(/obj/item/wand))
+		magcount += 4
 	if (magcount >= 4) return 1
 	else return 0
 
