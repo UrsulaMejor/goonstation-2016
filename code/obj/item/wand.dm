@@ -72,11 +72,11 @@ obj/item/wand/transmutation
 	cast_message = ""
 
 	New()
-		spawn(1)
-			if(!src.possible_materials)
+		if(!src.possible_materials)
+			spawn(1)
 				src.possible_materials = material_cache
 				src.stored_material = pick(possible_materials)
-			..()
+		..()
 
 	set_vars()
 		src.setMaterial(getCachedMaterial(stored_material))
@@ -112,11 +112,10 @@ obj/item/wand/transmutation/limited
 	charges = 13
 
 	New()
-		spawn(1)
-			if(!src.possible_materials)
-				src.possible_materials = list("slag","leather","bone","mauxite","pharosium","molitz","ice","koshmarite")
-				src.stored_material = pick(possible_materials)
-			..()
+		if(!src.possible_materials)
+			src.possible_materials = list("slag","leather","bone","mauxite","pharosium","molitz","ice","koshmarite")
+			src.stored_material = pick(possible_materials)
+		..()
 
 	pick_material(mob/user as mob)
 		if(!src.charges)
