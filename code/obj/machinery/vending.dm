@@ -90,6 +90,8 @@
 
 	var/datum/light/light
 
+	var/output_target = null
+
 	power_usage = 50
 
 	New()
@@ -112,6 +114,65 @@
 	// because someone, somewhere, always forgets to use a ..()
 	proc/create_products()
 		return
+
+	MouseDrop(over_object, src_location, over_location)
+		if(!istype(usr,/mob/living/))
+			boutput(usr, "<span style=\"color:red\">Only living mobs are able to set the output target for [src].</span>")
+			return
+
+		if(get_dist(over_object,src) > 1)
+			boutput(usr, "<span style=\"color:red\">[src] is too far away from the target!</span>")
+			return
+
+		if(get_dist(over_object,usr) > 1)
+			boutput(usr, "<span style=\"color:red\">You are too far away from the target!</span>")
+			return
+
+		if (istype(over_object,/obj/storage/crate/))
+			var/obj/storage/crate/C = over_object
+			if (C.locked || C.welded)
+				boutput(usr, "<span style=\"color:red\">You can't use a currently unopenable crate as an output target.</span>")
+			else
+				src.output_target = over_object
+				boutput(usr, "<span style=\"color:blue\">You set [src] to output to [over_object]!</span>")
+
+		else if (istype(over_object,/obj/table/) || istype(over_object,/obj/rack/))
+			var/obj/O = over_object
+			src.output_target = O.loc
+			boutput(usr, "<span style=\"color:blue\">You set [src] to output on top of [O]!</span>")
+
+		else if (istype(over_object,/turf/simulated/floor/))
+			src.output_target = over_object
+			boutput(usr, "<span style=\"color:blue\">You set [src] to output to [over_object]!</span>")
+
+		else
+			boutput(usr, "<span style=\"color:red\">You can't use that as an output target.</span>")
+		return
+
+	proc/get_output_location()
+		if (!src.output_target)
+			return src.loc
+
+		if (get_dist(src.output_target,src) > 1)
+			src.output_target = null
+			return src.loc
+
+		if (istype(src.output_target,/obj/storage/crate/))
+			var/obj/storage/crate/C = src.output_target
+			if (C.locked || C.welded)
+				src.output_target = null
+				return src.loc
+			else
+				if (C.open)
+					return C.loc
+				else
+					return C
+
+		else if (istype(src.output_target,/turf/simulated/floor/))
+			return src.output_target
+
+		else
+			return src.loc
 
 /obj/machinery/vending/coffee
 	name = "coffee machine"
@@ -1150,13 +1211,13 @@
 				if (!pay || (src.credit >= R.product_cost) || (account && account.fields["current_money"] >= R.product_cost)) //Conor12: Prevents credit hitting negative numbers if multiple items are bought at once.
 					R.product_amount--
 					if (ispath(product_path))
-						new product_path(get_turf(src))
+						new product_path(get_output_location())
 					else if (isicon(R.product_path))
 						var/icon/welp = icon(R.product_path)
 						if (welp.Width() > 32 || welp.Height() > 32)
 							welp.Scale(32, 32)
 							R.product_path = welp // if scaling is required reset the product_path so it only happens the first time
-						var/obj/dummy = new /obj/item(get_turf(src))
+						var/obj/dummy = new /obj/item(get_output_location())
 						dummy.name = R.product_name
 						dummy.desc = "?!"
 						dummy.icon = welp
@@ -1196,7 +1257,7 @@
 		if (href_list["return_credits"])
 			spawn(src.vend_delay)
 				if (src.credit > 0)
-					var/obj/item/spacecash/returned = new /obj/item/spacecash(get_turf(src), src.credit)
+					var/obj/item/spacecash/returned = new /obj/item/spacecash(get_output_location(), src.credit)
 					src.credit = 0
 					boutput(usr, "<span style=\"color:blue\">You receive [returned].</span>")
 					src.generate_HTML(1)

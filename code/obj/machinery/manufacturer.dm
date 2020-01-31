@@ -817,7 +817,7 @@
 				src.output_target = M
 				boutput(usr, "<span style=\"color:blue\">You set the manufacturer to output to [over_object]!</span>")
 
-		else if (istype(over_object,/obj/table/) && istype(over_object,/obj/rack/))
+		else if (istype(over_object,/obj/table/) || istype(over_object,/obj/rack/))
 			var/obj/O = over_object
 			src.output_target = O.loc
 			boutput(usr, "<span style=\"color:blue\">You set the manufacturer to output on top of [O]!</span>")
