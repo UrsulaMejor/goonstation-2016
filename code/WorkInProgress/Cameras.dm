@@ -85,6 +85,54 @@
 	w_class = 1.0
 	var/image/fullImage
 	var/icon/fullIcon
+	var/list/signed = list()
+	var/written = null
+	var/image/my_writing = null
+
+/obj/item/photo/get_desc(var/dist)
+	if(dist>1)
+		return
+	else
+		if(signed || written)
+			. += "<br>"
+		if(signed.len > 0)
+			for(var/x in signed)
+				. += "It is signed: [x]"
+				. += "<br>"
+		if (written)
+			. += "At the bottom is written: [written]"
+
+
+/obj/item/photo/attackby(obj/item/W as obj, mob/user as mob)
+	var/obj/item/pen/P = W
+	if(istype(P))
+		var/signwrite = input(user, "Sign or Write?", null, null) as null|anything in list("sign","write")
+		var/t = input(user, "What do you want to [signwrite]?", null, null) as null|text
+		t = copytext(html_encode(t), 1, MAX_MESSAGE_LEN)
+		if(t)
+			if(signwrite == "sign")
+				var/image/signature = image(icon='icons/misc/photo_writing.dmi',icon_state="[signwrite]")
+				signature.color = P.font_color
+				signature.pixel_x = -10*(1-rand())
+				signature.pixel_y = 15*(1-rand())
+				signature.layer = OBJ_LAYER + 0.01
+				src.overlays += signature
+				signed += "<span style='color: [P.font_color]'>[t]</span>"
+			else if (signwrite == "write")
+				var/image/writing = image(icon='icons/misc/photo_writing.dmi',icon_state="[signwrite]")
+				writing.color = P.font_color
+				writing.layer = OBJ_LAYER + 0.01
+
+				if(!written)
+					written = "<span style='color: [P.font_color]'>[t]</span>"
+				else
+					src.overlays -= src.my_writing
+					written = "[src.written] <span style='color: [P.font_color]'>[t]</span>"
+
+				src.my_writing = writing
+				src.overlays += writing
+		return
+	..()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 /*/obj/item/camera_test*/
